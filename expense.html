@@ -180,6 +180,7 @@ body{display:flex;flex-direction:column;min-height:100dvh}
   <button class="tab active" onclick="switchTab('summary',this)">總覽</button>
   <button class="tab" onclick="switchTab('budget',this)">預算</button>
   <button class="tab" onclick="switchTab('list',this)">明細</button>
+  <button class="tab" onclick="switchTab('wishlist',this)">購物清單</button>
   <button class="tab" onclick="switchTab('proxy',this)">代購</button>
   <button class="tab" onclick="switchTab('settle',this)">結算</button>
   <button class="tab" onclick="switchTab('settings',this)">設定</button>
@@ -209,6 +210,15 @@ body{display:flex;flex-direction:column;min-height:100dvh}
     <div id="expenseList"></div>
   </div>
 
+  <!-- 購物清單 -->
+  <div id="tab-wishlist" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="section-label" style="margin:0">預定購買清單</div>
+      <button onclick="openWishlistModal()" style="background:var(--accent2);border:none;border-radius:var(--radius-sm);padding:6px 12px;color:#fff;font-size:13px;cursor:pointer;font-family:inherit">+ 新增</button>
+    </div>
+    <div id="wishlistContent"></div>
+  </div>
+
   <!-- 代購 -->
   <div id="tab-proxy" style="display:none">
     <div class="section-label">代購清單</div>
@@ -236,6 +246,20 @@ body{display:flex;flex-direction:column;min-height:100dvh}
       <button class="settings-btn" style="width:100%;margin-top:6px" onclick="saveBudgets()">儲存預算</button>
     </div>
 
+    <div class="section-label">🎌 動漫週邊預算</div>
+    <div class="settings-card">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">整趟旅行的動漫週邊總額度（個人各自計算）</div>
+      <div class="settings-row">
+        <span class="settings-label">🔵 威 總額 ¥</span>
+        <input class="settings-input" id="animeBudgetWeiInput" type="number" placeholder="例：20000" inputmode="numeric">
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">🩷 肥肥 總額 ¥</span>
+        <input class="settings-input" id="animeBudgetFatInput" type="number" placeholder="例：20000" inputmode="numeric">
+      </div>
+      <button class="settings-btn" style="width:100%;margin-top:6px" onclick="saveAnimeBudget()">儲存動漫預算</button>
+    </div>
+
     <div class="section-label">代購對象管理</div>
     <div class="settings-card">
       <div id="proxyPeopleList"></div>
@@ -255,7 +279,55 @@ body{display:flex;flex-direction:column;min-height:100dvh}
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Wishlist Modal -->
+<div class="modal-bg" id="wishlistModalBg" onclick="closeWishlistModalOutside(event)">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="wishlistModalTitle">新增購買項目</span>
+      <button class="modal-close" onclick="closeWishlistModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="field">
+      <div class="field-label">商品名稱</div>
+      <input type="text" id="wishName" placeholder="例：鬼滅之刃 彩色毛絨玩偶">
+    </div>
+    <div class="field">
+      <div class="field-label">類別</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="wishCatPicker">
+        <button class="type-btn selected" data-wcat="動漫週邊" onclick="selectWishCat(this)">🎌<span>動漫週邊</span></button>
+        <button class="type-btn" data-wcat="藥妝" onclick="selectWishCat(this)">💊<span>藥妝</span></button>
+        <button class="type-btn" data-wcat="零食" onclick="selectWishCat(this)">🍡<span>零食</span></button>
+        <button class="type-btn" data-wcat="購物" onclick="selectWishCat(this)">🛍️<span>其他購物</span></button>
+        <button class="type-btn" data-wcat="景點" onclick="selectWishCat(this)">🎡<span>景點票</span></button>
+        <button class="type-btn" data-wcat="其他" onclick="selectWishCat(this)">📌<span>其他</span></button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">預計金額 ¥（選填）</div>
+      <input type="number" id="wishAmt" placeholder="例：3500" inputmode="numeric" oninput="updateWishTwd()">
+      <div id="wishTwdPreview" style="font-size:12px;color:var(--text2);margin-top:4px;text-align:right"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">購買地點（選填）</div>
+      <input type="text" id="wishPlace" placeholder="例：池袋 Animate">
+    </div>
+    <div class="field">
+      <div class="field-label">誰要買</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="wishPersonPicker">
+        <button class="type-btn" data-wperson="wei" onclick="selectWishPerson(this)">🔵<span>威</span></button>
+        <button class="type-btn" data-wperson="fat" onclick="selectWishPerson(this)">🩷<span>肥肥豬豬</span></button>
+        <button class="type-btn selected" data-wperson="both" onclick="selectWishPerson(this)">👥<span>兩人都要</span></button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">備註（選填）</div>
+      <input type="text" id="wishNote" placeholder="例：限定版、記得比價">
+    </div>
+    <button class="submit-btn" onclick="saveWishlistItem()">儲存</button>
+    <button class="del-btn" id="wishDelBtn" style="display:none" onclick="deleteWishlistItem()">刪除此項目</button>
+  </div>
+</div>
+
+<!-- Expense Modal -->
 <div class="modal-bg" id="modalBg" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-title">
@@ -381,15 +453,16 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 </div>
 
 <script>
-const APP_VERSION = '1.2.1';
+const APP_VERSION = '1.3.0';
 const FOOD_CATS = ['餐飲','零食'];
+const ANIME_CATS = ['動漫週邊'];
 const TRIP_DAYS = ['2025-05-13','2025-05-14','2025-05-15','2025-05-16','2025-05-17','2025-05-18','2025-05-19'];
 const DAY_LABELS = ['5/13 鎌倉・橫濱','5/14 江之島・鎌倉','5/15 八景島・新橋','5/16 澀谷・明治神宮','5/17 池袋・淺草','5/18 原宿・新宿','5/19 回程'];
-const CATS = {'餐飲':'🍜','交通':'🚃','購物':'🛍️','景點':'🎡','住宿':'🏨','藥妝':'💊','零食':'🍡','其他':'📌'};
-const CAT_COLORS = {'餐飲':'#e05555','交通':'#4a6fd4','購物':'#c84ab0','景點':'#e09a30','住宿':'#3a9de0','藥妝':'#4ecb8d','零食':'#e0c030','其他':'#8890b8'};
+const CATS = {'餐飲':'🍜','交通':'🚃','購物':'🛍️','景點':'🎡','住宿':'🏨','藥妝':'💊','零食':'🍡','動漫週邊':'🎌','其他':'📌'};
+const CAT_COLORS = {'餐飲':'#e05555','交通':'#4a6fd4','購物':'#c84ab0','景點':'#e09a30','住宿':'#3a9de0','藥妝':'#4ecb8d','零食':'#e0c030','動漫週邊':'#e060c0','其他':'#8890b8'};
 const PEOPLE = {wei:{name:'威',color:'#6c8ff0'},fat:{name:'肥肥豬豬',color:'#f06ca0'}};
 const TYPE_HINTS = {personal:'個人支出：只從付款人預算扣除',shared:'共同支出：兩人各扣一半預算',proxy:'代購：記錄幫別人買的東西，不計入個人預算'};
-const TABS = ['summary','budget','list','proxy','settle','settings'];
+const TABS = ['summary','budget','list','wishlist','proxy','settle','settings'];
 
 // State
 let expenses = JSON.parse(localStorage.getItem('expenses')||'[]');
@@ -410,6 +483,11 @@ let splitWeiOn = true, splitFatOn = true;
 let proxyAmounts = {};
 let currentStatus = 'paid';
 let currentTransType = '';
+let animeBudget = JSON.parse(localStorage.getItem('animeBudget')||'{"wei":0,"fat":0}');
+let wishlist = JSON.parse(localStorage.getItem('wishlist')||'[]');
+let editingWishId = null;
+let currentWishCat = '動漫週邊';
+let currentWishPerson = 'both';
 
 const STATUS_HINTS = {
   paid: '已付款：計入花費統計與預算',
@@ -479,15 +557,19 @@ function applyTransport() {
     document.getElementById('splitFatPct').value=50;
     updateSplitUI();
   }
+  if (isProxy) renderProxyFieldsModal();
 }
+
+function getDayBudget(date, person) {
   return budgets.days?.[date]?.[person] ?? budgets['default'+person.charAt(0).toUpperCase()+person.slice(1)] ?? 0;
 }
 
-// ── Init ──────────────────────────────────────────────
 window.addEventListener('load', () => {
   document.getElementById('expenseDate').value = getTodayStr();
   if (budgets.defaultWei) document.getElementById('budgetWeiInput').value = budgets.defaultWei;
   if (budgets.defaultFat) document.getElementById('budgetFatInput').value = budgets.defaultFat;
+  if (animeBudget.wei) document.getElementById('animeBudgetWeiInput').value = animeBudget.wei;
+  if (animeBudget.fat) document.getElementById('animeBudgetFatInput').value = animeBudget.fat;
   document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
   renderCatPicker();
   renderProxyPeopleSettings();
@@ -542,7 +624,7 @@ function switchTab(tab, el) {
 }
 
 // ── Render ────────────────────────────────────────────
-function render() { renderSummary(); renderBudget(); renderList(); renderProxy(); renderSettle(); }
+function render() { renderSummary(); renderBudget(); renderList(); renderWishlist(); renderProxy(); renderSettle(); }
 
 function renderSummary() {
   const countable = expenses.filter(e=>e.status!=='planned');
@@ -592,6 +674,44 @@ function renderSummary() {
         <div class="cat-bar-wrap"><div class="cat-bar" style="width:${amt/max*100}%;background:${CAT_COLORS[cat]||'var(--accent)'}"></div></div>
       </div>
     </div>`).join('') : '<div class="empty">尚無支出紀錄</div>';
+
+  // Anime budget card
+  if (animeBudget.wei || animeBudget.fat) {
+    const weiAnime = Math.round(countable.filter(e=>e.category==='動漫週邊').reduce((s,e)=>s+(e.splits?.wei||0)*e.amount/100,0));
+    const fatAnime = Math.round(countable.filter(e=>e.category==='動漫週邊').reduce((s,e)=>s+(e.splits?.fat||0)*e.amount/100,0));
+    const weiPct = animeBudget.wei ? Math.min(weiAnime/animeBudget.wei*100,100) : 0;
+    const fatPct = animeBudget.fat ? Math.min(fatAnime/animeBudget.fat*100,100) : 0;
+    const existing = document.getElementById('animeBudgetSummary');
+    const card = `<div class="budget-card" id="animeBudgetSummary" style="margin-top:0">
+      <div class="budget-title">🎌 動漫週邊預算</div>
+      ${animeBudget.wei?`<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+          <span style="color:var(--wei)">🔵 威</span>
+          <span style="color:${weiAnime>animeBudget.wei?'var(--red)':'var(--text2)'}">
+            ${fmtJpy(weiAnime)} / ${fmtJpy(animeBudget.wei)} 
+            ${weiAnime>animeBudget.wei?`<span style="color:var(--red)">超支！</span>`:`剩 ${fmtJpy(animeBudget.wei-weiAnime)}`}
+          </span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill ${weiAnime>animeBudget.wei?'over':weiPct>80?'warn':''}" style="width:${weiPct}%;background:#e060c0"></div></div>
+      </div>`:''}
+      ${animeBudget.fat?`<div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+          <span style="color:var(--fat)">🩷 肥肥豬豬</span>
+          <span style="color:${fatAnime>animeBudget.fat?'var(--red)':'var(--text2)'}">
+            ${fmtJpy(fatAnime)} / ${fmtJpy(animeBudget.fat)}
+            ${fatAnime>animeBudget.fat?`<span style="color:var(--red)">超支！</span>`:`剩 ${fmtJpy(animeBudget.fat-fatAnime)}`}
+          </span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill ${fatAnime>animeBudget.fat?'over':fatPct>80?'warn':''}" style="width:${fatPct}%;background:var(--fat)"></div></div>
+      </div>`:''}
+    </div>`;
+    const catEl = document.getElementById('catSummary');
+    if (!document.getElementById('animeBudgetSummary')) {
+      catEl.insertAdjacentHTML('afterend', card);
+    } else {
+      document.getElementById('animeBudgetSummary').outerHTML = card;
+    }
+  }
 }
 
 function renderBudget() {
@@ -748,6 +868,173 @@ function renderList() {
         </div>
       </div>`;
     }).join('');
+  }).join('');
+}
+
+function saveAnimeBudget() {
+  animeBudget.wei = parseInt(document.getElementById('animeBudgetWeiInput').value)||0;
+  animeBudget.fat = parseInt(document.getElementById('animeBudgetFatInput').value)||0;
+  localStorage.setItem('animeBudget', JSON.stringify(animeBudget));
+  render(); alert('動漫週邊預算已儲存！');
+}
+
+// ── Wishlist ──────────────────────────────────────────
+function renderWishlist() {
+  const el = document.getElementById('wishlistContent'); if(!el) return;
+  if (!wishlist.length) {
+    el.innerHTML = '<div class="empty">尚無購買項目<br>點右上角「+ 新增」加入</div>'; return;
+  }
+  const byCat = {};
+  wishlist.forEach(w => { (byCat[w.cat]=byCat[w.cat]||[]).push(w); });
+  const totalEst = wishlist.filter(w=>!w.bought&&w.amt).reduce((s,w)=>s+w.amt,0);
+  const boughtTotal = wishlist.filter(w=>w.bought&&w.amt).reduce((s,w)=>s+w.amt,0);
+  const doneCount = wishlist.filter(w=>w.bought).length;
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <div class="person-card">
+        <div class="person-name">🛒 待買</div>
+        <div class="person-amt" style="color:var(--accent);font-size:18px">${wishlist.length-doneCount} 件</div>
+        ${totalEst?`<div class="person-twd">預估 ${fmtJpy(totalEst)}</div>`:''}
+      </div>
+      <div class="person-card">
+        <div class="person-name">✅ 已買</div>
+        <div class="person-amt" style="color:var(--green);font-size:18px">${doneCount} 件</div>
+        ${boughtTotal?`<div class="person-twd">共 ${fmtJpy(boughtTotal)}</div>`:''}
+      </div>
+    </div>` +
+  Object.entries(byCat).map(([cat, items]) => `
+    <div style="margin-bottom:14px">
+      <div class="section-label">${CATS[cat]||'📌'} ${cat}</div>
+      ${items.map(w => `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:4px;${w.bought?'opacity:0.6':''}">
+          <button onclick="toggleWishBought('${w.id}')"
+            style="width:22px;height:22px;border-radius:4px;border:1.5px solid ${w.bought?'var(--green)':'var(--border2)'};background:${w.bought?'var(--green)':'none'};cursor:pointer;flex-shrink:0;color:#0a0a1a;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">
+            ${w.bought?'✓':''}
+          </button>
+          <div style="flex:1;min-width:0" onclick="openWishlistEdit('${w.id}')" style="cursor:pointer">
+            <div style="font-size:14px;color:var(--text);font-weight:500;${w.bought?'text-decoration:line-through':''}">${escH(w.name)}</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px">
+              ${w.person==='wei'?'🔵 威':w.person==='fat'?'🩷 肥肥豬豬':'👥 兩人'}
+              ${w.place?` · ${escH(w.place)}`:''}
+              ${w.note?` · ${escH(w.note)}`:''}
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;cursor:pointer" onclick="openWishlistEdit('${w.id}')">
+            ${w.amt?`<div style="font-size:13px;font-weight:600;color:${w.bought?'var(--green)':'var(--text)'}">${fmtJpy(w.amt)}</div>`:''}
+            ${w.amt?`<div style="font-size:10px;color:var(--text2)">${fmtTwd(w.amt)}</div>`:''}
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function openWishlistModal() {
+  editingWishId = null;
+  document.getElementById('wishlistModalTitle').textContent = '新增購買項目';
+  document.getElementById('wishName').value = '';
+  document.getElementById('wishAmt').value = '';
+  document.getElementById('wishPlace').value = '';
+  document.getElementById('wishNote').value = '';
+  document.getElementById('wishTwdPreview').textContent = '';
+  document.getElementById('wishDelBtn').style.display = 'none';
+  currentWishCat = '動漫週邊'; currentWishPerson = 'both';
+  document.querySelectorAll('#wishCatPicker .type-btn').forEach(b => b.classList.toggle('selected', b.dataset.wcat===currentWishCat));
+  document.querySelectorAll('#wishPersonPicker .type-btn').forEach(b => b.classList.toggle('selected', b.dataset.wperson===currentWishPerson));
+  document.getElementById('wishlistModalBg').classList.add('show');
+}
+
+function openWishlistEdit(id) {
+  const w = wishlist.find(x=>x.id===id); if(!w) return;
+  editingWishId = id;
+  document.getElementById('wishlistModalTitle').textContent = '編輯購買項目';
+  document.getElementById('wishName').value = w.name;
+  document.getElementById('wishAmt').value = w.amt||'';
+  document.getElementById('wishPlace').value = w.place||'';
+  document.getElementById('wishNote').value = w.note||'';
+  document.getElementById('wishDelBtn').style.display = 'block';
+  currentWishCat = w.cat; currentWishPerson = w.person||'both';
+  document.querySelectorAll('#wishCatPicker .type-btn').forEach(b => b.classList.toggle('selected', b.dataset.wcat===currentWishCat));
+  document.querySelectorAll('#wishPersonPicker .type-btn').forEach(b => b.classList.toggle('selected', b.dataset.wperson===currentWishPerson));
+  updateWishTwd();
+  document.getElementById('wishlistModalBg').classList.add('show');
+}
+
+function closeWishlistModal() { document.getElementById('wishlistModalBg').classList.remove('show'); }
+function closeWishlistModalOutside(e) { if(e.target===document.getElementById('wishlistModalBg')) closeWishlistModal(); }
+
+function selectWishCat(btn) {
+  currentWishCat = btn.dataset.wcat;
+  document.querySelectorAll('#wishCatPicker .type-btn').forEach(b => b.classList.toggle('selected', b.dataset.wcat===currentWishCat));
+}
+function selectWishPerson(btn) {
+  currentWishPerson = btn.dataset.wperson;
+  document.querySelectorAll('#wishPersonPicker .type-btn').forEach(b => b.classList.toggle('selected', b.dataset.wperson===currentWishPerson));
+}
+function updateWishTwd() {
+  const v = parseInt(document.getElementById('wishAmt').value)||0;
+  document.getElementById('wishTwdPreview').textContent = v&&rate ? `≈ NT$${Math.round(v*rate).toLocaleString()}` : '';
+}
+
+function saveWishlistItem() {
+  const name = document.getElementById('wishName').value.trim();
+  if (!name) { alert('請輸入商品名稱'); return; }
+  const item = {
+    id: editingWishId || Date.now().toString(),
+    name, cat: currentWishCat, person: currentWishPerson,
+    amt: parseInt(document.getElementById('wishAmt').value)||0,
+    place: document.getElementById('wishPlace').value.trim(),
+    note: document.getElementById('wishNote').value.trim(),
+    bought: editingWishId ? (wishlist.find(w=>w.id===editingWishId)?.bought||false) : false
+  };
+  if (editingWishId) {
+    const idx = wishlist.findIndex(w=>w.id===editingWishId);
+    if (idx>=0) wishlist[idx]=item;
+  } else { wishlist.push(item); }
+  localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  closeWishlistModal(); renderWishlist();
+}
+
+function toggleWishBought(id) {
+  const w = wishlist.find(x=>x.id===id); if(!w) return;
+  w.bought = !w.bought;
+  localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  renderWishlist();
+}
+
+function deleteWishlistItem() {
+  if (!confirm('確定刪除？')) return;
+  wishlist = wishlist.filter(w=>w.id!==editingWishId);
+  localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  closeWishlistModal(); renderWishlist();
+}
+
+function renderProxy() {
+  const el = document.getElementById('proxyList'); if(!el)return;
+  if (!all.length) { el.innerHTML='<div class="empty">尚無代購紀錄<br>新增支出時選擇「代購」</div>'; return; }
+  const byPerson = {};
+  all.forEach(p => { (byPerson[p.name]=byPerson[p.name]||[]).push(p); });
+  el.innerHTML = Object.entries(byPerson).map(([name,items]) => {
+    const total = items.reduce((s,i)=>s+i.amount,0);
+    return `<div class="proxy-summary">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:15px;font-weight:600">👤 ${escH(name)}</div>
+        <div style="text-align:right">
+          <div style="font-size:16px;font-weight:700;color:var(--accent)">${fmtJpy(total)}</div>
+          <div style="font-size:11px;color:var(--text2)">${fmtTwd(total)}</div>
+        </div>
+      </div>
+      ${items.map(i=>`<div class="proxy-item">
+        <div class="proxy-item-icon">${CATS[i.expense.category]||'📌'}</div>
+        <div class="proxy-item-info">
+          <div class="proxy-item-name">${escH(i.expense.name)}</div>
+          <div class="proxy-item-meta">${i.expense.date} · ${PEOPLE[i.expense.payer]?.name||i.expense.payer} 付</div>
+        </div>
+        <div class="proxy-item-amt">${fmtJpy(i.amount)}</div>
+      </div>`).join('')}
+      <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border);font-size:11px;color:var(--text2)">
+        需向 ${escH(name)} 收回 ${fmtJpy(total)}（${fmtTwd(total)}）
+      </div>
+    </div>`;
   }).join('');
 }
 
