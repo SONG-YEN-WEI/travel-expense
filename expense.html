@@ -12,166 +12,153 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 :root {
-  --bg: #0a0a1a;
-  --surface: #13132a;
-  --surface2: #1c1c3a;
-  --accent: #6c8ff0;
-  --accent2: #4a6fd4;
-  --green: #4ecb8d;
-  --red: #e05555;
-  --yellow: #f0b429;
-  --text: #e8eaff;
-  --text2: #8890b8;
-  --text3: #484870;
-  --border: rgba(108,143,240,0.12);
-  --border2: rgba(108,143,240,0.22);
-  --radius: 14px;
-  --radius-sm: 8px;
-  --wei: #6c8ff0;
-  --fat: #f06ca0;
+  --bg:#0a0a1a; --surface:#13132a; --surface2:#1c1c3a;
+  --accent:#6c8ff0; --accent2:#4a6fd4;
+  --green:#4ecb8d; --red:#e05555; --yellow:#f0b429;
+  --text:#e8eaff; --text2:#8890b8; --text3:#484870;
+  --border:rgba(108,143,240,0.12); --border2:rgba(108,143,240,0.22);
+  --radius:14px; --radius-sm:8px;
+  --wei:#6c8ff0; --fat:#f06ca0;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Hiragino Sans','Noto Sans TC','PingFang TC',sans-serif; overscroll-behavior: none; }
-body { display: flex; flex-direction: column; min-height: 100dvh; }
-
-.proxy-toggle { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 8px; }
-.proxy-toggle-label { font-size: 14px; color: var(--text); flex: 1; }
-.proxy-toggle-switch { width: 40px; height: 22px; border-radius: 11px; background: var(--surface); border: 1.5px solid var(--border2); position: relative; transition: background 0.2s; flex-shrink: 0; }
-.proxy-toggle-switch.on { background: var(--accent2); border-color: var(--accent2); }
-.proxy-toggle-switch::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 1px; left: 1px; transition: left 0.2s; }
-.proxy-toggle-switch.on::after { left: 21px; }
-.proxy-fields { display: none; background: var(--surface2); border: 0.5px solid var(--accent); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 8px; }
-.proxy-fields.show { display: block; }
-.proxy-person-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid var(--border); }
-.proxy-person-row:last-child { border-bottom: none; }
-.proxy-person-name { font-size: 14px; color: var(--text); }
-.proxy-person-amt { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 6px; padding: 5px 8px; font-size: 15px; color: var(--text); outline: none; font-family: inherit; text-align: right; width: 120px; }
-.proxy-badge { display: inline-block; font-size: 10px; background: rgba(108,143,240,0.15); color: var(--accent); border-radius: 4px; padding: 1px 6px; margin-left: 4px; vertical-align: middle; }
-.proxy-summary { background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
-.proxy-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
-.proxy-item:last-child { border-bottom: none; }
-.proxy-item-icon { width: 32px; height: 32px; background: rgba(108,143,240,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.proxy-item-info { flex: 1; min-width: 0; }
-.proxy-item-name { font-size: 13px; color: var(--text); }
-.proxy-item-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
-.proxy-item-amt { font-size: 14px; font-weight: 600; color: var(--accent); }
-
-.status-bar { height: env(safe-area-inset-top,0px); background: var(--bg); }
-
-/* Header */
-.header { padding: 14px 18px 12px; background: var(--bg); border-bottom: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: space-between; }
-.header-title { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: 0.03em; }
-.header-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.add-btn { width: 40px; height: 40px; background: var(--accent2); border: none; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 22px; }
-.add-btn:active { opacity: 0.8; }
-
-/* Tabs */
-.tabs { display: flex; border-bottom: 0.5px solid var(--border2); background: var(--bg); }
-.tab { flex: 1; padding: 10px 0 8px; font-size: 13px; font-weight: 500; color: var(--text3); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-/* Scroll body */
-.scroll-body { flex: 1; overflow-y: auto; padding: 14px 14px 100px; -webkit-overflow-scrolling: touch; }
-
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Hiragino Sans','Noto Sans TC','PingFang TC',sans-serif;overscroll-behavior:none}
+body{display:flex;flex-direction:column;min-height:100dvh}
+.status-bar{height:env(safe-area-inset-top,0px);background:var(--bg)}
+.update-banner{display:none;position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;background:#2a1a0a;color:#fff;font-size:13px;padding:10px 16px;z-index:1000;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--yellow)}
+.update-banner.show{display:flex}
+.update-banner-btn{background:var(--yellow);border:none;color:#000;font-size:12px;font-weight:700;padding:5px 12px;border-radius:4px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.header{padding:14px 18px 12px;background:var(--bg);border-bottom:0.5px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:18px;font-weight:700;color:var(--text)}
+.header-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.add-btn{width:40px;height:40px;background:var(--accent2);border:none;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:22px}
+.add-btn:active{opacity:0.8}
+.tabs{display:flex;border-bottom:0.5px solid var(--border2);background:var(--bg);overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:10px 12px 8px;font-size:12px;font-weight:500;color:var(--text3);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.scroll-body{flex:1;overflow-y:auto;padding:14px 14px 100px;-webkit-overflow-scrolling:touch}
+.section-label{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;margin-top:4px}
+.empty{text-align:center;padding:40px 0;color:var(--text3);font-size:14px;line-height:1.8}
+.rate-row{font-size:12px;color:var(--text3);text-align:right;margin-bottom:10px;display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.rate-refresh{background:none;border:none;color:var(--accent);cursor:pointer;font-size:16px;display:flex;align-items:center}
 /* Budget card */
-.budget-card { background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
-.budget-title { font-size: 11px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
-.budget-main { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 12px; }
-.budget-amount { font-size: 32px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
-.budget-unit { font-size: 14px; color: var(--text2); margin-bottom: 4px; }
-.budget-twd { font-size: 13px; color: var(--text2); margin-left: auto; align-self: flex-end; margin-bottom: 4px; }
-.progress-bar { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
-.progress-fill { height: 100%; border-radius: 99px; transition: width 0.4s; background: var(--accent); }
-.progress-fill.warn { background: var(--yellow); }
-.progress-fill.over { background: var(--red); }
-.budget-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
-
+.budget-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.budget-title{font-size:11px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+.budget-main{display:flex;align-items:flex-end;gap:6px;margin-bottom:8px}
+.budget-amount{font-size:32px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.budget-unit{font-size:14px;color:var(--text2);margin-bottom:4px}
+.budget-twd{font-size:13px;color:var(--text2);margin-left:auto;align-self:flex-end;margin-bottom:4px}
+.progress-bar{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;border-radius:99px;transition:width 0.4s;background:var(--accent)}
+.progress-fill.warn{background:var(--yellow)}
+.progress-fill.over{background:var(--red)}
+.budget-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3)}
 /* Person cards */
-.person-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-.person-card { background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 14px; }
-.person-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-.person-amt { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.person-twd { font-size: 11px; color: var(--text2); margin-top: 2px; }
-.person-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-
-/* Category summary */
-.cat-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
-.cat-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.cat-name { flex: 1; font-size: 14px; color: var(--text); }
-.cat-amt { font-size: 14px; font-weight: 600; color: var(--text); }
-.cat-bar-wrap { height: 3px; background: var(--surface2); border-radius: 99px; margin-top: 4px; }
-.cat-bar { height: 100%; border-radius: 99px; background: var(--accent); }
-
-/* Settlement */
-.settle-card { background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
-.settle-arrow { display: flex; align-items: center; gap: 10px; }
-.settle-person { font-size: 14px; font-weight: 600; }
-.settle-amt { font-size: 18px; font-weight: 700; color: var(--green); margin-left: auto; }
-.settle-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
-
+.person-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.person-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px}
+.person-name{font-size:13px;font-weight:600;margin-bottom:6px}
+.person-amt{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.person-twd{font-size:11px;color:var(--text2);margin-top:2px}
+.person-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+/* Cat */
+.cat-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.cat-icon{width:34px;height:34px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cat-name{flex:1;font-size:14px;color:var(--text)}
+.cat-amt{font-size:14px;font-weight:600;color:var(--text)}
+.cat-bar-wrap{height:3px;background:var(--surface2);border-radius:99px;margin-top:4px}
+.cat-bar{height:100%;border-radius:99px}
+/* Day budget */
+.day-budget-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.day-budget-card.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+/* Settle */
+.settle-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.settle-arrow{display:flex;align-items:center;gap:10px}
+.settle-person{font-size:14px;font-weight:600}
+.settle-amt{font-size:18px;font-weight:700;color:var(--green);margin-left:auto}
+.settle-label{font-size:12px;color:var(--text2);margin-top:4px}
 /* Expense list */
-.expense-item { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
-.expense-item:active { opacity: 0.7; }
-.expense-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.expense-info { flex: 1; min-width: 0; }
-.expense-name { font-size: 14px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.expense-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
-.expense-amt { text-align: right; flex-shrink: 0; }
-.expense-jpy { font-size: 15px; font-weight: 600; color: var(--text); }
-.expense-twd { font-size: 11px; color: var(--text2); margin-top: 1px; }
-.day-header { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; padding: 12px 0 4px; }
-
+.expense-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:0.5px solid var(--border);cursor:pointer}
+.expense-item:active{opacity:0.7}
+.expense-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.expense-info{flex:1;min-width:0}
+.expense-name{font-size:14px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.expense-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.expense-amt{text-align:right;flex-shrink:0}
+.expense-jpy{font-size:15px;font-weight:600;color:var(--text)}
+.expense-twd{font-size:11px;color:var(--text2);margin-top:1px}
+.day-header{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.08em;padding:12px 0 4px}
+.type-badge{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle}
+/* Proxy */
+.proxy-summary{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.proxy-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.proxy-item:last-of-type{border-bottom:none}
+.proxy-item-icon{width:32px;height:32px;background:rgba(108,143,240,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.proxy-item-info{flex:1;min-width:0}
+.proxy-item-name{font-size:13px;color:var(--text)}
+.proxy-item-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.proxy-item-amt{font-size:14px;font-weight:600;color:var(--accent)}
 /* Modal */
-.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: flex-end; }
-.modal-bg.show { display: flex; }
-.modal { background: var(--surface); border-radius: var(--radius) var(--radius) 0 0; padding: 20px 18px calc(20px + env(safe-area-inset-bottom,0px)); width: 100%; max-height: 92dvh; overflow-y: auto; }
-.modal-title { font-size: 17px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
-.modal-close { width: 32px; height: 32px; background: var(--surface2); border: none; border-radius: 50%; color: var(--text2); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.field { margin-bottom: 14px; }
-.field-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.04em; }
-.field input, .field select { width: 100%; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 11px 12px; font-size: 16px; color: var(--text); outline: none; font-family: inherit; }
-.field input::placeholder { color: var(--text3); }
-.field select option { background: var(--surface2); }
-.cat-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.cat-pick-btn { background: var(--surface2); border: 1.5px solid transparent; border-radius: var(--radius-sm); padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; font-size: 20px; }
-.cat-pick-btn span { font-size: 10px; color: var(--text2); }
-.cat-pick-btn.selected { border-color: var(--accent); background: rgba(108,143,240,0.1); }
-.payer-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.payer-btn { background: var(--surface2); border: 1.5px solid transparent; border-radius: var(--radius-sm); padding: 12px; text-align: center; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text); }
-.payer-btn.selected-wei { border-color: var(--wei); background: rgba(108,143,240,0.1); color: var(--wei); }
-.payer-btn.selected-fat { border-color: var(--fat); background: rgba(240,108,160,0.1); color: var(--fat); }
-.split-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.split-label { font-size: 13px; color: var(--text); width: 70px; flex-shrink: 0; }
-.split-check { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--border2); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.split-check.on { background: var(--accent); border-color: var(--accent); }
-.split-pct { flex: 1; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 15px; color: var(--text); outline: none; font-family: inherit; text-align: right; width: 100%; }
-.submit-btn { width: 100%; padding: 14px; background: var(--accent2); border: none; border-radius: var(--radius); color: #fff; font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer; margin-top: 6px; }
-.submit-btn:active { opacity: 0.8; }
-.del-btn { width: 100%; padding: 12px; background: none; border: 0.5px solid var(--red); border-radius: var(--radius); color: var(--red); font-size: 14px; font-family: inherit; cursor: pointer; margin-top: 8px; }
-
-/* Bottom nav */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 0.5px solid var(--border2); display: flex; padding-bottom: env(safe-area-inset-bottom,0px); }
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 0; font-size: 10px; color: var(--text3); border: none; background: none; cursor: pointer; }
-.nav-item.active { color: var(--accent); }
-.nav-item i { font-size: 22px; }
-
-.section-label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; margin-top: 4px; }
-.empty { text-align: center; padding: 40px 0; color: var(--text3); font-size: 14px; }
-
-/* Budget setup */
-.budget-setup { background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
-.budget-setup-row { display: flex; align-items: center; gap: 10px; }
-.budget-setup-label { font-size: 13px; color: var(--text2); flex-shrink: 0; }
-.budget-setup-input { flex: 1; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 16px; color: var(--text); outline: none; font-family: inherit; }
-.budget-setup-btn { padding: 8px 14px; background: var(--accent2); border: none; border-radius: var(--radius-sm); color: #fff; font-size: 13px; cursor: pointer; white-space: nowrap; }
-
-.rate-row { font-size: 12px; color: var(--text3); text-align: right; margin-bottom: 10px; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
-.rate-refresh { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 14px; }
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:flex-end}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));width:100%;max-height:92dvh;overflow-y:auto}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
+.modal-close{width:32px;height:32px;background:var(--surface2);border:none;border-radius:50%;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.field{margin-bottom:14px}
+.field-label{font-size:12px;color:var(--text2);margin-bottom:6px;letter-spacing:0.04em}
+.field input,.field select{width:100%;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:11px 12px;font-size:16px;color:var(--text);outline:none;font-family:inherit}
+.field input::placeholder{color:var(--text3)}
+/* Cat picker */
+.cat-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cat-pick-btn{background:var(--surface2);border:1.5px solid transparent;border-radius:var(--radius-sm);padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:20px;transition:all 0.15s}
+.cat-pick-btn span{font-size:10px;color:var(--text2)}
+.cat-pick-btn.selected{border-color:var(--accent);background:rgba(108,143,240,0.12)}
+/* Type picker */
+.type-picker{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.type-btn{background:var(--surface2);border:1.5px solid transparent;border-radius:var(--radius-sm);padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:18px;transition:all 0.15s}
+.type-btn span{font-size:10px;color:var(--text2)}
+.type-btn.selected{border-color:var(--accent);background:rgba(108,143,240,0.12)}
+.type-hint{font-size:11px;color:var(--text2);margin-top:6px;padding:6px 8px;background:var(--surface2);border-radius:6px}
+/* Payer picker */
+.payer-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.payer-btn{background:var(--surface2);border:1.5px solid transparent;border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);transition:all 0.15s;font-family:inherit}
+.payer-btn.sel-wei{border-color:var(--wei);background:rgba(108,143,240,0.12);color:var(--wei)}
+.payer-btn.sel-fat{border-color:var(--fat);background:rgba(240,108,160,0.12);color:var(--fat)}
+/* Split */
+.split-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.split-label{font-size:13px;color:var(--text);width:75px;flex-shrink:0}
+.split-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:#fff;transition:all 0.15s}
+.split-check.on{background:var(--accent);border-color:var(--accent)}
+.split-pct{flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:8px 10px;font-size:15px;color:var(--text);outline:none;font-family:inherit;text-align:right}
+/* Proxy in modal */
+.proxy-fields{display:none;background:var(--surface2);border:0.5px solid var(--accent);border-radius:var(--radius-sm);padding:12px;margin-top:8px}
+.proxy-fields.show{display:block}
+.proxy-person-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)}
+.proxy-person-row:last-of-type{border-bottom:none}
+.proxy-person-name{font-size:14px;color:var(--text)}
+.proxy-person-amt{background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:15px;color:var(--text);outline:none;font-family:inherit;text-align:right;width:110px}
+/* Buttons */
+.submit-btn{width:100%;padding:14px;background:var(--accent2);border:none;border-radius:var(--radius);color:#fff;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:6px}
+.submit-btn:active{opacity:0.8}
+.del-btn{width:100%;padding:12px;background:none;border:0.5px solid var(--red);border-radius:var(--radius);color:var(--red);font-size:14px;font-family:inherit;cursor:pointer;margin-top:8px}
+/* Settings */
+.settings-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.settings-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.settings-row:last-child{margin-bottom:0}
+.settings-label{font-size:13px;color:var(--text2);flex-shrink:0;width:90px}
+.settings-input{flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:9px 12px;font-size:15px;color:var(--text);outline:none;font-family:inherit}
+.settings-btn{padding:9px 14px;background:var(--accent2);border:none;border-radius:var(--radius-sm);color:#fff;font-size:13px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.action-btn{width:100%;padding:11px;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px;text-align:left}
+.action-btn.danger{background:none;border-color:var(--red);color:var(--red)}
+.version-tag{font-size:11px;color:var(--text3);text-align:center;margin-top:16px}
 </style>
 </head>
 <body>
-
 <div class="status-bar"></div>
+
+<div class="update-banner" id="updateBanner">
+  <span id="updateMsg">🆕 有新版本可用！</span>
+  <button class="update-banner-btn" onclick="doUpdate()">立即更新</button>
+</div>
 
 <div class="header">
   <div>
@@ -183,7 +170,7 @@ body { display: flex; flex-direction: column; min-height: 100dvh; }
   </button>
 </div>
 
-<div class="tabs">
+<div class="tabs" id="tabBar">
   <button class="tab active" onclick="switchTab('summary',this)">總覽</button>
   <button class="tab" onclick="switchTab('budget',this)">預算</button>
   <button class="tab" onclick="switchTab('list',this)">明細</button>
@@ -192,15 +179,14 @@ body { display: flex; flex-direction: column; min-height: 100dvh; }
   <button class="tab" onclick="switchTab('settings',this)">設定</button>
 </div>
 
-<div class="scroll-body" id="scrollBody">
-
+<div class="scroll-body">
   <!-- 總覽 -->
   <div id="tab-summary">
     <div class="rate-row">
-      匯率 ¥1 = NT$<span id="rateVal">載入中</span>
+      匯率 ¥1 = NT$<span id="rateVal">--</span>
       <button class="rate-refresh" onclick="fetchRate()" aria-label="更新匯率"><i class="ti ti-refresh"></i></button>
     </div>
-    <div id="budgetCard"></div>
+    <div id="summaryBudgetCard"></div>
     <div class="section-label">個人花費</div>
     <div class="person-row" id="personRow"></div>
     <div class="section-label">分類統計</div>
@@ -230,49 +216,40 @@ body { display: flex; flex-direction: column; min-height: 100dvh; }
 
   <!-- 設定 -->
   <div id="tab-settings" style="display:none">
-    <div class="section-label">每日預算設定</div>
-    <div class="budget-setup" style="margin-bottom:10px">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">設定每人每日額度，共同支出從兩人各扣一半</div>
-
-      <div style="margin-bottom:10px">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:6px">🔵 威 — 每日額度 ¥</div>
-        <div class="budget-setup-row">
-          <input class="budget-setup-input" id="budgetWeiInput" type="number" placeholder="例：5000">
-          <button class="budget-setup-btn" onclick="saveBudgets()">儲存</button>
-        </div>
+    <div class="section-label">每日預算</div>
+    <div class="settings-card">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">設定每人每日額度，共同支出各扣一半</div>
+      <div class="settings-row">
+        <span class="settings-label">🔵 威 / 日 ¥</span>
+        <input class="settings-input" id="budgetWeiInput" type="number" placeholder="5000" inputmode="numeric">
       </div>
-      <div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:6px">🩷 肥肥豬豬 — 每日額度 ¥</div>
-        <div class="budget-setup-row">
-          <input class="budget-setup-input" id="budgetFatInput" type="number" placeholder="例：5000">
-        </div>
+      <div class="settings-row">
+        <span class="settings-label">🩷 肥肥豬豬 / 日 ¥</span>
+        <input class="settings-input" id="budgetFatInput" type="number" placeholder="5000" inputmode="numeric">
+      </div>
+      <button class="settings-btn" style="width:100%;margin-top:6px" onclick="saveBudgets()">儲存預算</button>
+    </div>
+
+    <div class="section-label">代購對象管理</div>
+    <div class="settings-card">
+      <div id="proxyPeopleList"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input class="settings-input" id="newProxyName" type="text" placeholder="新增代購對象名字" style="flex:1">
+        <button class="settings-btn" onclick="addProxyPerson()">新增</button>
       </div>
     </div>
 
-    <div class="section-label" style="margin-top:16px">旅伴</div>
-    <div class="budget-setup" style="font-size:14px;color:var(--text2)">
-      <div style="display:flex;align-items:center;gap:8px;padding:6px 0">
-        <span style="width:10px;height:10px;border-radius:50%;background:var(--wei);flex-shrink:0"></span> 威
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;padding:6px 0">
-        <span style="width:10px;height:10px;border-radius:50%;background:var(--fat);flex-shrink:0"></span> 肥肥豬豬
-      </div>
+    <div class="section-label">資料管理</div>
+    <div class="settings-card">
+      <button class="action-btn" onclick="exportData()">📤 匯出資料（複製 JSON）</button>
+      <button class="action-btn danger" onclick="clearAllData()">🗑️ 清除所有資料</button>
     </div>
 
-    <div class="section-label" style="margin-top:16px">資料管理</div>
-    <div class="budget-setup">
-      <button onclick="exportData()" style="width:100%;padding:10px;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px">
-        📤 匯出資料（複製JSON）
-      </button>
-      <button onclick="clearAllData()" style="width:100%;padding:10px;background:none;border:0.5px solid var(--red);border-radius:var(--radius-sm);color:var(--red);font-size:14px;cursor:pointer;font-family:inherit">
-        🗑️ 清除所有資料
-      </button>
-    </div>
+    <div class="version-tag" id="versionTag"></div>
   </div>
-
 </div>
 
-<!-- Add expense modal -->
+<!-- Modal -->
 <div class="modal-bg" id="modalBg" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-title">
@@ -282,16 +259,17 @@ body { display: flex; flex-direction: column; min-height: 100dvh; }
 
     <div class="field">
       <div class="field-label">類別</div>
-      <div class="cat-picker" id="catPicker">
-        <button class="cat-pick-btn selected" data-cat="餐飲" onclick="selectCat(this)">🍜<span>餐飲</span></button>
-        <button class="cat-pick-btn" data-cat="交通" onclick="selectCat(this)">🚃<span>交通</span></button>
-        <button class="cat-pick-btn" data-cat="購物" onclick="selectCat(this)">🛍️<span>購物</span></button>
-        <button class="cat-pick-btn" data-cat="景點" onclick="selectCat(this)">🎡<span>景點</span></button>
-        <button class="cat-pick-btn" data-cat="住宿" onclick="selectCat(this)">🏨<span>住宿</span></button>
-        <button class="cat-pick-btn" data-cat="藥妝" onclick="selectCat(this)">💊<span>藥妝</span></button>
-        <button class="cat-pick-btn" data-cat="零食" onclick="selectCat(this)">🍡<span>零食</span></button>
-        <button class="cat-pick-btn" data-cat="其他" onclick="selectCat(this)">📌<span>其他</span></button>
+      <div class="cat-picker" id="catPicker"></div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">支出性質</div>
+      <div class="type-picker" id="typePicker">
+        <button class="type-btn" data-type="personal" onclick="selectType(this)">👤<span>個人</span></button>
+        <button class="type-btn selected" data-type="shared" onclick="selectType(this)">👥<span>共同</span></button>
+        <button class="type-btn" data-type="proxy" onclick="selectType(this)">🛍️<span>代購</span></button>
       </div>
+      <div class="type-hint" id="typeHint">共同支出：兩人各扣一半預算</div>
     </div>
 
     <div class="field">
@@ -307,65 +285,45 @@ body { display: flex; flex-direction: column; min-height: 100dvh; }
 
     <div class="field">
       <div class="field-label">付款人</div>
-      <div class="payer-picker">
-        <button class="payer-btn selected-wei" id="payerWei" onclick="selectPayer('wei')">威</button>
-        <button class="payer-btn" id="payerFat" onclick="selectPayer('fat')">肥肥豬豬</button>
+      <div class="payer-picker" id="payerPicker">
+        <button class="payer-btn sel-wei" data-payer="wei" onclick="selectPayer(this)">威</button>
+        <button class="payer-btn" data-payer="fat" onclick="selectPayer(this)">肥肥豬豬</button>
       </div>
     </div>
 
-    <div class="field">
-      <div class="field-label">分攤</div>
+    <div class="field" id="splitField">
+      <div class="field-label">分攤比例</div>
       <div class="split-row">
         <span class="split-label">威</span>
-        <button class="split-check on" id="splitWeiCheck" onclick="toggleSplit('wei')"></button>
-        <input class="split-pct" id="splitWeiPct" type="number" value="50" min="0" max="100" oninput="syncSplit('wei')"> %
+        <button class="split-check on" id="splitWeiCheck" onclick="toggleSplit('wei')">✓</button>
+        <input class="split-pct" id="splitWeiPct" type="number" value="50" min="0" max="100" oninput="syncSplit('wei')">
+        <span style="font-size:13px;color:var(--text2)">%</span>
       </div>
       <div class="split-row">
         <span class="split-label">肥肥豬豬</span>
-        <button class="split-check on" id="splitFatCheck" onclick="toggleSplit('fat')"></button>
-        <input class="split-pct" id="splitFatPct" type="number" value="50" min="0" max="100" oninput="syncSplit('fat')"> %
+        <button class="split-check on" id="splitFatCheck" onclick="toggleSplit('fat')">✓</button>
+        <input class="split-pct" id="splitFatPct" type="number" value="50" min="0" max="100" oninput="syncSplit('fat')">
+        <span style="font-size:13px;color:var(--text2)">%</span>
+      </div>
+    </div>
+
+    <div class="field" id="proxyField" style="display:none">
+      <div class="field-label">代購詳情</div>
+      <div class="proxy-fields show" id="proxyFields"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="text" id="proxyNewNameModal" placeholder="新增代購對象" style="flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:8px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit">
+        <button onclick="addProxyPersonModal()" style="padding:8px 12px;background:var(--accent2);border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer">新增</button>
       </div>
     </div>
 
     <div class="field">
       <div class="field-label">日期</div>
-      <input type="date" id="expenseDate" value="">
-    </div>
-
-    <div class="field">
-      <div class="field-label">性質</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-        <button class="payer-btn" id="typePersonal" onclick="selectExpenseType('personal')" style="border-color:var(--border2);font-size:12px">👤 個人</button>
-        <button class="payer-btn selected-wei" id="typeShared" onclick="selectExpenseType('shared')" style="font-size:12px">👥 共同</button>
-        <button class="payer-btn" id="typeProxy" onclick="selectExpenseType('proxy')" style="border-color:var(--border2);font-size:12px">🛍️ 代購</button>
-      </div>
-      <div id="typeHint" style="font-size:11px;color:var(--text2);margin-top:6px;padding:6px 8px;background:var(--surface2);border-radius:6px">
-        共同支出：從兩人預算各扣一半
-      </div>
-    </div>
-      <input type="text" id="expenseNote" placeholder="例：澀谷店">
+      <input type="date" id="expenseDate">
     </div>
 
     <div class="field">
       <div class="field-label">備註（選填）</div>
-      <div class="proxy-toggle" onclick="toggleProxy()">
-        <span class="proxy-toggle-label">🛍️ 幫別人代購</span>
-        <div class="proxy-toggle-switch" id="proxySwitch"></div>
-      </div>
-      <div class="proxy-fields" id="proxyFields">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">填入代購金額（日圓），未填視為不代購</div>
-        <div class="proxy-person-row">
-          <span class="proxy-person-name">代購對象名稱</span>
-        </div>
-        <div id="proxyPersonList"></div>
-        <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border)">
-          <div style="font-size:12px;color:var(--text2);margin-bottom:6px">新增代購對象</div>
-          <div style="display:flex;gap:8px">
-            <input id="proxyNewName" type="text" placeholder="對方名字" style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:8px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit">
-            <button onclick="addProxyPerson()" style="padding:8px 12px;background:var(--accent2);border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;white-space:nowrap">新增</button>
-          </div>
-        </div>
-      </div>
+      <input type="text" id="expenseNote" placeholder="例：澀谷店">
     </div>
 
     <button class="submit-btn" onclick="saveExpense()">儲存</button>
@@ -374,35 +332,64 @@ body { display: flex; flex-direction: column; min-height: 100dvh; }
 </div>
 
 <script>
-const PEOPLE = { wei: { name: '威', color: '#6c8ff0' }, fat: { name: '肥肥豬豬', color: '#f06ca0' } };
-const CATS = { '餐飲':'🍜','交通':'🚃','購物':'🛍️','景點':'🎡','住宿':'🏨','藥妝':'💊','零食':'🍡','其他':'📌' };
-const CAT_COLORS = { '餐飲':'#e05555','交通':'#4a6fd4','購物':'#c84ab0','景點':'#e09a30','住宿':'#3a9de0','藥妝':'#4ecb8d','零食':'#e0c030','其他':'#8890b8' };
+const APP_VERSION = '1.0.0';
+const TRIP_DAYS = ['2025-05-13','2025-05-14','2025-05-15','2025-05-16','2025-05-17','2025-05-18','2025-05-19'];
+const DAY_LABELS = ['5/13 鎌倉・橫濱','5/14 江之島・鎌倉','5/15 八景島・新橋','5/16 澀谷・明治神宮','5/17 池袋・淺草','5/18 原宿・新宿','5/19 回程'];
+const CATS = {'餐飲':'🍜','交通':'🚃','購物':'🛍️','景點':'🎡','住宿':'🏨','藥妝':'💊','零食':'🍡','其他':'📌'};
+const CAT_COLORS = {'餐飲':'#e05555','交通':'#4a6fd4','購物':'#c84ab0','景點':'#e09a30','住宿':'#3a9de0','藥妝':'#4ecb8d','零食':'#e0c030','其他':'#8890b8'};
+const PEOPLE = {wei:{name:'威',color:'#6c8ff0'},fat:{name:'肥肥豬豬',color:'#f06ca0'}};
+const TYPE_HINTS = {personal:'個人支出：只從付款人預算扣除',shared:'共同支出：兩人各扣一半預算',proxy:'代購：記錄幫別人買的東西，不計入個人預算'};
+const TABS = ['summary','budget','list','proxy','settle','settings'];
 
-let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
-let budgets = JSON.parse(localStorage.getItem('budgets') || '{"wei":0,"fat":0}');
-let rate = parseFloat(localStorage.getItem('rate') || '0');
-let proxyPeople = JSON.parse(localStorage.getItem('proxyPeople') || '[]');
-let currentTab = 'summary';
+// State
+let expenses = JSON.parse(localStorage.getItem('expenses')||'[]');
+let budgets = JSON.parse(localStorage.getItem('budgets')||'{"wei":0,"fat":0}');
+let rate = parseFloat(localStorage.getItem('rate')||'0');
+let proxyPeople = JSON.parse(localStorage.getItem('proxyPeople')||'[]');
 let editingId = null;
-let selectedCat = '餐飲';
-let selectedPayer = 'wei';
-let selectedType = 'shared'; // 'personal','shared','proxy'
+let currentType = 'shared';
+let currentPayer = 'wei';
+let currentCat = '餐飲';
 let splitWeiOn = true, splitFatOn = true;
-let proxyOn = false;
 let proxyAmounts = {};
 
-const TRIP_DAYS = ['2025-05-13','2025-05-14','2025-05-15','2025-05-16','2025-05-17','2025-05-18','2025-05-19'];
-const DAY_LABELS = ['5/13 鎌倉・橫濱','5/14 江之島・鎌倉','5/15 八景島・新橋','5/16 澀谷・明治神宮','5/17 池袋・淺草','5/18 原宿・新宿・谷中','5/19 回程'];
-
+// ── Init ──────────────────────────────────────────────
 window.addEventListener('load', () => {
-  document.getElementById('expenseDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('expenseDate').value = getTodayStr();
   if (budgets.wei) document.getElementById('budgetWeiInput').value = budgets.wei;
   if (budgets.fat) document.getElementById('budgetFatInput').value = budgets.fat;
+  document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
+  renderCatPicker();
+  renderProxyPeopleSettings();
   fetchRate();
   render();
-}); // { name: amount }
+  checkForUpdate();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./expense-sw.js').catch(()=>{});
+  }
+});
 
-// Rate
+function getTodayStr() { return new Date().toISOString().slice(0,10); }
+
+// ── Update check ──────────────────────────────────────
+async function checkForUpdate() {
+  try {
+    const res = await fetch('./expense.html?v=' + Date.now());
+    const text = await res.text();
+    const m = text.match(/const APP_VERSION = '([^']+)'/);
+    if (m && m[1] !== APP_VERSION) {
+      document.getElementById('updateMsg').textContent = '🆕 有新版本 v' + m[1] + '，目前 v' + APP_VERSION;
+      document.getElementById('updateBanner').classList.add('show');
+    }
+  } catch(e) {}
+}
+function doUpdate() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(rs => { rs.forEach(r=>r.unregister()); location.reload(true); });
+  } else { location.reload(true); }
+}
+
+// ── Rate ──────────────────────────────────────────────
 async function fetchRate() {
   try {
     const r = await fetch('https://open.er-api.com/v6/latest/JPY');
@@ -411,542 +398,444 @@ async function fetchRate() {
     localStorage.setItem('rate', rate);
     document.getElementById('rateVal').textContent = rate.toFixed(3);
     render();
-  } catch { document.getElementById('rateVal').textContent = rate ? rate.toFixed(3) : '無法取得'; }
+  } catch { document.getElementById('rateVal').textContent = rate ? rate.toFixed(3) : '--'; }
 }
-
-function jpy2twd(jpy) { return rate ? Math.round(jpy * rate) : null; }
-function fmtJpy(n) { return '¥' + Number(n).toLocaleString(); }
+function jpy2twd(n) { return rate ? Math.round(n * rate) : null; }
+function fmtJpy(n) { return '¥' + Math.round(n).toLocaleString(); }
 function fmtTwd(n) { const t = jpy2twd(n); return t ? 'NT$' + t.toLocaleString() : ''; }
 
-// Tab
+// ── Tabs ──────────────────────────────────────────────
 function switchTab(tab, el) {
-  currentTab = tab;
-  ['summary','budget','list','proxy','settle','settings'].forEach(t => document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none');
-  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('active', ['summary','budget','list','proxy','settle','settings'][i]===tab));
+  TABS.forEach(t => document.getElementById('tab-'+t).style.display = t===tab?'block':'none');
+  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('active', TABS[i]===tab));
   render();
 }
 
-// Render
-function render() {
-  renderSummary();
-  renderBudget();
-  renderList();
-  renderProxy();
-  renderSettle();
-}
-
-function renderBudget() {
-  const el = document.getElementById('budgetDayContent');
-  if (!el) return;
-  const weiDaily = budgets.wei || 0;
-  const fatDaily = budgets.fat || 0;
-  if (!weiDaily && !fatDaily) {
-    el.innerHTML = '<div class="empty">尚未設定每日預算<br>請前往「設定」設定每人每日額度</div>';
-    return;
-  }
-
-  // Compute per-person spending per day
-  function getSpend(person, date) {
-    return expenses.filter(e => e.date === date).reduce((s, e) => {
-      const pct = e.splits?.[person] || 0;
-      return s + e.amount * pct / 100;
-    }, 0);
-  }
-
-  const today = new Date().toISOString().slice(0,10);
-
-  el.innerHTML = TRIP_DAYS.map((date, i) => {
-    const isPast = date < today;
-    const isToday = date === today;
-    const weiSpent = Math.round(getSpend('wei', date));
-    const fatSpent = Math.round(getSpend('fat', date));
-    const weiLeft = weiDaily - weiSpent;
-    const fatLeft = fatDaily - fatSpent;
-    const weiPct = weiDaily ? Math.min(weiSpent/weiDaily*100, 100) : 0;
-    const fatPct = fatDaily ? Math.min(fatSpent/fatDaily*100, 100) : 0;
-    const sharedSpent = Math.round(expenses.filter(e => e.date===date && e.expenseType==='shared').reduce((s,e)=>s+e.amount,0));
-
-    return `
-    <div style="background:var(--surface);border:0.5px solid ${isToday?'var(--accent)':'var(--border2)'};border-radius:var(--radius);padding:14px;margin-bottom:10px${isToday?';box-shadow:0 0 0 1px var(--accent)':''}">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div>
-          <span style="font-size:14px;font-weight:600;color:${isToday?'var(--accent)':'var(--text)'}">${DAY_LABELS[i]}</span>
-          ${isToday?'<span style="font-size:10px;background:var(--accent);color:#0a0a1a;border-radius:4px;padding:1px 6px;margin-left:6px">今天</span>':''}
-          ${isPast&&!isToday?'<span style="font-size:10px;color:var(--text3);margin-left:4px">已結束</span>':''}
-        </div>
-        ${sharedSpent?`<span style="font-size:11px;color:var(--text2)">共同 ${fmtJpy(sharedSpent)}</span>`:''}
-      </div>
-
-      ${weiDaily ? `
-      <div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-size:12px;color:var(--wei)">🔵 威</span>
-          <span style="font-size:12px;color:${weiLeft<0?'var(--red)':'var(--text2)'}">
-            花了 ${fmtJpy(weiSpent)} / ${fmtJpy(weiDaily)}
-            ${weiLeft<0?`<span style="color:var(--red)"> 超支 ${fmtJpy(-weiLeft)}</span>`:`剩 ${fmtJpy(weiLeft)}`}
-          </span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill ${weiLeft<0?'over':weiPct>80?'warn':''}" style="width:${weiPct}%;background:var(--wei)"></div></div>
-      </div>` : ''}
-
-      ${fatDaily ? `
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-size:12px;color:var(--fat)">🩷 肥肥豬豬</span>
-          <span style="font-size:12px;color:${fatLeft<0?'var(--red)':'var(--text2)'}">
-            花了 ${fmtJpy(fatSpent)} / ${fmtJpy(fatDaily)}
-            ${fatLeft<0?`<span style="color:var(--red)"> 超支 ${fmtJpy(-fatLeft)}</span>`:`剩 ${fmtJpy(fatLeft)}`}
-          </span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill ${fatLeft<0?'over':fatPct>80?'warn':''}" style="width:${fatPct}%;background:var(--fat)"></div></div>
-      </div>` : ''}
-    </div>`;
-  }).join('');
-}
-
-function renderProxy() {
-  const el = document.getElementById('proxyList');
-  if (!el) return;
-
-  // Collect all proxy entries from expenses
-  const allProxy = [];
-  expenses.forEach(e => {
-    if (e.proxyItems) {
-      e.proxyItems.forEach(p => {
-        allProxy.push({ ...p, expense: e });
-      });
-    }
-  });
-
-  if (!allProxy.length) {
-    el.innerHTML = '<div class="empty">尚無代購紀錄<br>新增支出時開啟「幫別人代購」</div>';
-    return;
-  }
-
-  // Group by person
-  const byPerson = {};
-  allProxy.forEach(p => {
-    if (!byPerson[p.name]) byPerson[p.name] = [];
-    byPerson[p.name].push(p);
-  });
-
-  el.innerHTML = Object.entries(byPerson).map(([name, items]) => {
-    const total = items.reduce((s,i) => s+i.amount, 0);
-    return `
-      <div class="proxy-summary">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div style="font-size:15px;font-weight:600;color:var(--text)">👤 ${escH(name)}</div>
-          <div style="text-align:right">
-            <div style="font-size:16px;font-weight:700;color:var(--accent)">${fmtJpy(total)}</div>
-            <div style="font-size:11px;color:var(--text2)">${fmtTwd(total)}</div>
-          </div>
-        </div>
-        ${items.map(i => `
-          <div class="proxy-item">
-            <div class="proxy-item-icon">${CATS[i.expense.category]||'📌'}</div>
-            <div class="proxy-item-info">
-              <div class="proxy-item-name">${escH(i.expense.name)}</div>
-              <div class="proxy-item-meta">${i.expense.date} · ${PEOPLE[i.expense.payer]?.name} 付款</div>
-            </div>
-            <div class="proxy-item-amt">${fmtJpy(i.amount)}</div>
-          </div>`).join('')}
-        <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border);font-size:12px;color:var(--text2)">
-          需向 ${escH(name)} 收回 ${fmtJpy(total)}（${fmtTwd(total)}）
-        </div>
-      </div>`;
-  }).join('');
-}
+// ── Render ────────────────────────────────────────────
+function render() { renderSummary(); renderBudget(); renderList(); renderProxy(); renderSettle(); }
 
 function renderSummary() {
-  const total = expenses.reduce((s,e) => s+e.amount, 0);
-  const weiTotal = expenses.reduce((s,e) => s + (e.splits?.wei||0)*e.amount/100, 0);
-  const fatTotal = expenses.reduce((s,e) => s + (e.splits?.fat||0)*e.amount/100, 0);
-  const sharedTotal = expenses.filter(e=>e.expenseType==='shared').reduce((s,e)=>s+e.amount,0);
-
-  const weiDaily = budgets.wei || 0;
-  const fatDaily = budgets.fat || 0;
-  const totalBudget = (weiDaily + fatDaily) * TRIP_DAYS.length;
+  const total = expenses.reduce((s,e)=>s+e.amount,0);
+  const weiSpent = expenses.reduce((s,e)=>s+(e.splits?.wei||0)*e.amount/100,0);
+  const fatSpent = expenses.reduce((s,e)=>s+(e.splits?.fat||0)*e.amount/100,0);
+  const sharedTotal = expenses.filter(e=>e.expType==='shared').reduce((s,e)=>s+e.amount,0);
+  const totalBudget = (budgets.wei+budgets.fat) * TRIP_DAYS.length;
   const pct = totalBudget ? Math.min(total/totalBudget*100,100) : 0;
 
-  document.getElementById('budgetCard').innerHTML = `
+  document.getElementById('summaryBudgetCard').innerHTML = `
     <div class="budget-card">
       <div class="budget-title">總花費</div>
       <div class="budget-main">
         <div class="budget-amount">${fmtJpy(total)}</div>
         <div class="budget-twd">${fmtTwd(total)}</div>
       </div>
-      ${sharedTotal ? `<div style="font-size:12px;color:var(--text2);margin-bottom:6px">其中共同支出 ${fmtJpy(sharedTotal)}</div>` : ''}
-      ${totalBudget ? `
-      <div class="progress-bar"><div class="progress-fill ${pct>100?'over':pct>80?'warn':''}" style="width:${pct}%"></div></div>
-      <div class="budget-labels"><span>已花 ${Math.round(pct)}%</span><span>總預算 ${fmtJpy(totalBudget)}</span></div>
-      ` : `<div style="font-size:12px;color:var(--text3)">前往「設定」設定每日預算</div>`}
+      ${sharedTotal?`<div style="font-size:11px;color:var(--text2);margin-bottom:6px">其中共同支出 ${fmtJpy(sharedTotal)}</div>`:''}
+      ${totalBudget?`
+        <div class="progress-bar"><div class="progress-fill ${pct>100?'over':pct>80?'warn':''}" style="width:${pct}%"></div></div>
+        <div class="budget-labels"><span>已花 ${Math.round(pct)}%</span><span>總預算 ${fmtJpy(totalBudget)}</span></div>
+      `:`<div style="font-size:11px;color:var(--text3)">前往「設定」設定每日預算</div>`}
     </div>`;
 
-  document.getElementById('personRow').innerHTML = `
-    <div class="person-card">
-      <div class="person-name"><span class="person-dot" style="background:var(--wei)"></span>威</div>
-      <div class="person-amt" style="color:var(--wei)">${fmtJpy(Math.round(weiTotal))}</div>
-      <div class="person-twd">${fmtTwd(Math.round(weiTotal))}</div>
-      ${weiDaily?`<div style="font-size:11px;color:var(--text3);margin-top:4px">每日 ${fmtJpy(weiDaily)}</div>`:''}
-    </div>
-    <div class="person-card">
-      <div class="person-name"><span class="person-dot" style="background:var(--fat)"></span>肥肥豬豬</div>
-      <div class="person-amt" style="color:var(--fat)">${fmtJpy(Math.round(fatTotal))}</div>
-      <div class="person-twd">${fmtTwd(Math.round(fatTotal))}</div>
-      ${fatDaily?`<div style="font-size:11px;color:var(--text3);margin-top:4px">每日 ${fmtJpy(fatDaily)}</div>`:''}
+  document.getElementById('personRow').innerHTML = ['wei','fat'].map(p => {
+    const spent = Math.round(p==='wei'?weiSpent:fatSpent);
+    const daily = budgets[p]||0;
+    return `<div class="person-card">
+      <div class="person-name"><span class="person-dot" style="background:var(--${p})"></span>${PEOPLE[p].name}</div>
+      <div class="person-amt" style="color:var(--${p})">${fmtJpy(spent)}</div>
+      <div class="person-twd">${fmtTwd(spent)}</div>
+      ${daily?`<div style="font-size:10px;color:var(--text3);margin-top:4px">每日 ${fmtJpy(daily)}</div>`:''}
     </div>`;
+  }).join('');
 
   const catTotals = {};
-  expenses.forEach(e => { catTotals[e.category] = (catTotals[e.category]||0) + e.amount; });
-  const maxCat = Math.max(...Object.values(catTotals), 1);
+  expenses.forEach(e => { catTotals[e.category]=(catTotals[e.category]||0)+e.amount; });
+  const max = Math.max(...Object.values(catTotals),1);
   const sorted = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('catSummary').innerHTML = sorted.length ? sorted.map(([cat,amt]) => `
+  document.getElementById('catSummary').innerHTML = sorted.length ? sorted.map(([cat,amt])=>`
     <div class="cat-row">
-      <div class="cat-icon" style="background:${CAT_COLORS[cat]}22">${CATS[cat]||'📌'}</div>
+      <div class="cat-icon" style="background:${CAT_COLORS[cat]||'#555'}22">${CATS[cat]||'📌'}</div>
       <div style="flex:1">
-        <div style="display:flex;justify-content:space-between">
-          <span class="cat-name">${cat}</span>
-          <span class="cat-amt">${fmtJpy(amt)}</span>
-        </div>
-        <div class="cat-bar-wrap"><div class="cat-bar" style="width:${amt/maxCat*100}%;background:${CAT_COLORS[cat]||'var(--accent)'}"></div></div>
+        <div style="display:flex;justify-content:space-between"><span class="cat-name">${cat}</span><span class="cat-amt">${fmtJpy(amt)}</span></div>
+        <div class="cat-bar-wrap"><div class="cat-bar" style="width:${amt/max*100}%;background:${CAT_COLORS[cat]||'var(--accent)'}"></div></div>
       </div>
     </div>`).join('') : '<div class="empty">尚無支出紀錄</div>';
 }
 
+function renderBudget() {
+  const el = document.getElementById('budgetDayContent'); if(!el)return;
+  if (!budgets.wei && !budgets.fat) {
+    el.innerHTML = '<div class="empty">尚未設定每日預算<br>前往「設定」→「每日預算」設定</div>'; return;
+  }
+  const today = getTodayStr();
+  el.innerHTML = TRIP_DAYS.map((date,i) => {
+    const isToday = date===today, isPast = date<today;
+    const weiSpent = Math.round(expenses.filter(e=>e.date===date).reduce((s,e)=>s+(e.splits?.wei||0)*e.amount/100,0));
+    const fatSpent = Math.round(expenses.filter(e=>e.date===date).reduce((s,e)=>s+(e.splits?.fat||0)*e.amount/100,0));
+    const shared = Math.round(expenses.filter(e=>e.date===date&&e.expType==='shared').reduce((s,e)=>s+e.amount,0));
+    const wd = budgets.wei||0, fd = budgets.fat||0;
+    const wp = wd ? Math.min(weiSpent/wd*100,100) : 0;
+    const fp = fd ? Math.min(fatSpent/fd*100,100) : 0;
+    return `<div class="day-budget-card ${isToday?'today':''}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <span style="font-size:14px;font-weight:600;color:${isToday?'var(--accent)':'var(--text)'}">${DAY_LABELS[i]}</span>
+          ${isToday?'<span style="font-size:9px;background:var(--accent);color:#0a0a1a;border-radius:3px;padding:1px 5px;margin-left:5px">今天</span>':''}
+          ${isPast&&!isToday?'<span style="font-size:10px;color:var(--text3);margin-left:4px">已結束</span>':''}
+        </div>
+        ${shared?`<span style="font-size:11px;color:var(--text2)">共同 ${fmtJpy(shared)}</span>`:''}
+      </div>
+      ${wd?`<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="color:var(--wei)">🔵 威</span>
+          <span style="color:${weiSpent>wd?'var(--red)':'var(--text2)'}">
+            ${fmtJpy(weiSpent)} / ${fmtJpy(wd)} 
+            ${weiSpent>wd?`<span style="color:var(--red)">超支 ${fmtJpy(weiSpent-wd)}</span>`:`剩 ${fmtJpy(wd-weiSpent)}`}
+          </span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill ${weiSpent>wd?'over':wp>80?'warn':''}" style="width:${wp}%;background:var(--wei)"></div></div>
+      </div>`:''}
+      ${fd?`<div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="color:var(--fat)">🩷 肥肥豬豬</span>
+          <span style="color:${fatSpent>fd?'var(--red)':'var(--text2)'}">
+            ${fmtJpy(fatSpent)} / ${fmtJpy(fd)}
+            ${fatSpent>fd?`<span style="color:var(--red)">超支 ${fmtJpy(fatSpent-fd)}</span>`:`剩 ${fmtJpy(fd-fatSpent)}`}
+          </span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill ${fatSpent>fd?'over':fp>80?'warn':''}" style="width:${fp}%;background:var(--fat)"></div></div>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
 function renderList() {
-  if (!expenses.length) { document.getElementById('expenseList').innerHTML = '<div class="empty">尚無支出紀錄<br>點右上角 + 新增</div>'; return; }
+  const el = document.getElementById('expenseList'); if(!el)return;
+  if (!expenses.length) { el.innerHTML='<div class="empty">尚無支出紀錄<br>點右上角 + 新增</div>'; return; }
   const byDay = {};
-  [...expenses].sort((a,b) => b.date.localeCompare(a.date)).forEach(e => {
-    if (!byDay[e.date]) byDay[e.date] = [];
-    byDay[e.date].push(e);
-  });
-  document.getElementById('expenseList').innerHTML = Object.entries(byDay).map(([date, items]) => {
+  [...expenses].sort((a,b)=>b.date.localeCompare(a.date)).forEach(e => { (byDay[e.date]=byDay[e.date]||[]).push(e); });
+  el.innerHTML = Object.entries(byDay).map(([date,items]) => {
     const dayTotal = items.reduce((s,e)=>s+e.amount,0);
     const d = new Date(date+'T00:00:00');
-    const dayStr = `${d.getMonth()+1}/${d.getDate()} (${['日','一','二','三','四','五','六'][d.getDay()]})`;
-    return `<div class="day-header">${dayStr} — ${fmtJpy(dayTotal)}</div>` +
-      items.map(e => `
-        <div class="expense-item" onclick="openEdit('${e.id}')">
-          <div class="expense-icon" style="background:${CAT_COLORS[e.category]||'#444'}22">${CATS[e.category]||'📌'}</div>
-          <div class="expense-info">
-            <div class="expense-name">${escH(e.name)}</div>
-            <div class="expense-meta">
-              <span style="color:${PEOPLE[e.payer]?.color}">${PEOPLE[e.payer]?.name}</span> 付
-              ${e.proxyItems?.length ? `<span class="proxy-badge">代購 ${e.proxyItems.length} 人</span>` : ''}
-              ${e.note ? ` · ${escH(e.note)}` : ''}
-            </div>
+    const lbl = `${d.getMonth()+1}/${d.getDate()} (${['日','一','二','三','四','五','六'][d.getDay()]}) — ${fmtJpy(dayTotal)}`;
+    return `<div class="day-header">${lbl}</div>` + items.map(e => {
+      const typeBg = {personal:'rgba(108,143,240,0.15)',shared:'rgba(78,203,141,0.15)',proxy:'rgba(240,108,160,0.15)'}[e.expType]||'';
+      const typeColor = {personal:'var(--accent)',shared:'var(--green)',proxy:'var(--fat)'}[e.expType]||'';
+      const typeLbl = {personal:'個人',shared:'共同',proxy:'代購'}[e.expType]||'';
+      return `<div class="expense-item" onclick="openEdit('${e.id}')">
+        <div class="expense-icon" style="background:${CAT_COLORS[e.category]||'#444'}22">${CATS[e.category]||'📌'}</div>
+        <div class="expense-info">
+          <div class="expense-name">${escH(e.name)}</div>
+          <div class="expense-meta">
+            <span style="color:${PEOPLE[e.payer]?.color||'var(--text2)'}">${PEOPLE[e.payer]?.name||e.payer}</span> 付
+            <span class="type-badge" style="background:${typeBg};color:${typeColor}">${typeLbl}</span>
+            ${e.proxyItems?.length?`<span class="type-badge" style="background:rgba(240,108,160,0.15);color:var(--fat)">代購${e.proxyItems.length}人</span>`:''}
+            ${e.note?` · ${escH(e.note)}`:''}
           </div>
-          <div class="expense-amt">
-            <div class="expense-jpy">${fmtJpy(e.amount)}</div>
-            <div class="expense-twd">${fmtTwd(e.amount)}</div>
-          </div>
-        </div>`).join('');
+        </div>
+        <div class="expense-amt">
+          <div class="expense-jpy">${fmtJpy(e.amount)}</div>
+          <div class="expense-twd">${fmtTwd(e.amount)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }).join('');
+}
+
+function renderProxy() {
+  const el = document.getElementById('proxyList'); if(!el)return;
+  const all = [];
+  expenses.forEach(e => { (e.proxyItems||[]).forEach(p => all.push({...p,expense:e})); });
+  if (!all.length) { el.innerHTML='<div class="empty">尚無代購紀錄<br>新增支出時選擇「代購」</div>'; return; }
+  const byPerson = {};
+  all.forEach(p => { (byPerson[p.name]=byPerson[p.name]||[]).push(p); });
+  el.innerHTML = Object.entries(byPerson).map(([name,items]) => {
+    const total = items.reduce((s,i)=>s+i.amount,0);
+    return `<div class="proxy-summary">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:15px;font-weight:600">👤 ${escH(name)}</div>
+        <div style="text-align:right">
+          <div style="font-size:16px;font-weight:700;color:var(--accent)">${fmtJpy(total)}</div>
+          <div style="font-size:11px;color:var(--text2)">${fmtTwd(total)}</div>
+        </div>
+      </div>
+      ${items.map(i=>`<div class="proxy-item">
+        <div class="proxy-item-icon">${CATS[i.expense.category]||'📌'}</div>
+        <div class="proxy-item-info">
+          <div class="proxy-item-name">${escH(i.expense.name)}</div>
+          <div class="proxy-item-meta">${i.expense.date} · ${PEOPLE[i.expense.payer]?.name||i.expense.payer} 付</div>
+        </div>
+        <div class="proxy-item-amt">${fmtJpy(i.amount)}</div>
+      </div>`).join('')}
+      <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border);font-size:11px;color:var(--text2)">
+        需向 ${escH(name)} 收回 ${fmtJpy(total)}（${fmtTwd(total)}）
+      </div>
+    </div>`;
   }).join('');
 }
 
 function renderSettle() {
-  // Calculate who paid and who owes
-  let weiPaid = 0, fatPaid = 0, weiOwes = 0, fatOwes = 0;
+  const el = document.getElementById('settleContent'); if(!el)return;
+  if (!expenses.length) { el.innerHTML='<div class="empty">尚無支出紀錄</div>'; return; }
+  let weiPaid=0, fatPaid=0, weiOwes=0, fatOwes=0;
   expenses.forEach(e => {
-    if (e.payer === 'wei') weiPaid += e.amount;
-    else fatPaid += e.amount;
-    weiOwes += (e.splits?.wei||0) * e.amount / 100;
-    fatOwes += (e.splits?.fat||0) * e.amount / 100;
+    if(e.payer==='wei') weiPaid+=e.amount; else fatPaid+=e.amount;
+    weiOwes += (e.splits?.wei||0)*e.amount/100;
+    fatOwes += (e.splits?.fat||0)*e.amount/100;
   });
   const weiBalance = weiPaid - weiOwes;
-  const fatBalance = fatPaid - fatOwes;
-
-  let html = '';
-  if (!expenses.length) {
-    html = '<div class="empty">尚無支出紀錄</div>';
+  const amt = Math.round(Math.abs(weiBalance));
+  let html = `
+    <div class="section-label">付款統計</div>
+    <div class="person-row">
+      <div class="person-card"><div class="person-name"><span class="person-dot" style="background:var(--wei)"></span>威 付了</div>
+        <div class="person-amt" style="color:var(--wei)">${fmtJpy(Math.round(weiPaid))}</div><div class="person-twd">${fmtTwd(Math.round(weiPaid))}</div></div>
+      <div class="person-card"><div class="person-name"><span class="person-dot" style="background:var(--fat)"></span>肥肥豬豬 付了</div>
+        <div class="person-amt" style="color:var(--fat)">${fmtJpy(Math.round(fatPaid))}</div><div class="person-twd">${fmtTwd(Math.round(fatPaid))}</div></div>
+    </div>
+    <div class="section-label">應付金額</div>
+    <div class="person-row">
+      <div class="person-card"><div class="person-name"><span class="person-dot" style="background:var(--wei)"></span>威 應付</div>
+        <div class="person-amt" style="color:var(--wei)">${fmtJpy(Math.round(weiOwes))}</div><div class="person-twd">${fmtTwd(Math.round(weiOwes))}</div></div>
+      <div class="person-card"><div class="person-name"><span class="person-dot" style="background:var(--fat)"></span>肥肥豬豬 應付</div>
+        <div class="person-amt" style="color:var(--fat)">${fmtJpy(Math.round(fatOwes))}</div><div class="person-twd">${fmtTwd(Math.round(fatOwes))}</div></div>
+    </div>
+    <div class="section-label">結算結果</div>`;
+  if (amt < 1) {
+    html += `<div class="settle-card" style="text-align:center;color:var(--green);font-size:16px">🎉 已平衡，不需要轉帳！</div>`;
+  } else if (weiBalance > 0) {
+    html += `<div class="settle-card"><div class="settle-arrow">
+      <span class="settle-person" style="color:var(--fat)">肥肥豬豬</span>
+      <i class="ti ti-arrow-right" style="color:var(--text3)"></i>
+      <span class="settle-person" style="color:var(--wei)">威</span>
+      <span class="settle-amt">${fmtJpy(amt)}</span></div>
+      <div class="settle-label">肥肥豬豬需還給威 ${fmtTwd(amt)}</div></div>`;
   } else {
-    html += `
-      <div class="section-label">付款統計</div>
-      <div class="person-row" style="margin-bottom:14px">
-        <div class="person-card">
-          <div class="person-name"><span class="person-dot" style="background:var(--wei)"></span>威 付了</div>
-          <div class="person-amt" style="color:var(--wei)">${fmtJpy(Math.round(weiPaid))}</div>
-          <div class="person-twd">${fmtTwd(Math.round(weiPaid))}</div>
-        </div>
-        <div class="person-card">
-          <div class="person-name"><span class="person-dot" style="background:var(--fat)"></span>肥肥豬豬 付了</div>
-          <div class="person-amt" style="color:var(--fat)">${fmtJpy(Math.round(fatPaid))}</div>
-          <div class="person-twd">${fmtTwd(Math.round(fatPaid))}</div>
-        </div>
-      </div>
-      <div class="section-label">應付金額</div>
-      <div class="person-row" style="margin-bottom:14px">
-        <div class="person-card">
-          <div class="person-name"><span class="person-dot" style="background:var(--wei)"></span>威 應付</div>
-          <div class="person-amt" style="color:var(--wei)">${fmtJpy(Math.round(weiOwes))}</div>
-          <div class="person-twd">${fmtTwd(Math.round(weiOwes))}</div>
-        </div>
-        <div class="person-card">
-          <div class="person-name"><span class="person-dot" style="background:var(--fat)"></span>肥肥豬豬 應付</div>
-          <div class="person-amt" style="color:var(--fat)">${fmtJpy(Math.round(fatOwes))}</div>
-          <div class="person-twd">${fmtTwd(Math.round(fatOwes))}</div>
-        </div>
-      </div>
-      <div class="section-label">結算結果</div>`;
-
-    if (Math.abs(weiBalance) < 1) {
-      html += `<div class="settle-card" style="text-align:center;color:var(--green)">🎉 已平衡！不需要轉帳</div>`;
-    } else if (weiBalance > 0) {
-      // 威多付了，肥肥豬豬欠威
-      const amt = Math.round(weiBalance);
-      html += `<div class="settle-card">
-        <div class="settle-arrow">
-          <span class="settle-person" style="color:var(--fat)">肥肥豬豬</span>
-          <i class="ti ti-arrow-right" style="color:var(--text3)"></i>
-          <span class="settle-person" style="color:var(--wei)">威</span>
-          <span class="settle-amt">${fmtJpy(amt)}</span>
-        </div>
-        <div class="settle-label">肥肥豬豬需還給威 ${fmtTwd(amt)}</div>
-      </div>`;
-    } else {
-      // 肥肥豬豬多付了，威欠肥肥豬豬
-      const amt = Math.round(Math.abs(weiBalance));
-      html += `<div class="settle-card">
-        <div class="settle-arrow">
-          <span class="settle-person" style="color:var(--wei)">威</span>
-          <i class="ti ti-arrow-right" style="color:var(--text3)"></i>
-          <span class="settle-person" style="color:var(--fat)">肥肥豬豬</span>
-          <span class="settle-amt">${fmtJpy(amt)}</span>
-        </div>
-        <div class="settle-label">威需還給肥肥豬豬 ${fmtTwd(amt)}</div>
-      </div>`;
-    }
+    html += `<div class="settle-card"><div class="settle-arrow">
+      <span class="settle-person" style="color:var(--wei)">威</span>
+      <i class="ti ti-arrow-right" style="color:var(--text3)"></i>
+      <span class="settle-person" style="color:var(--fat)">肥肥豬豬</span>
+      <span class="settle-amt">${fmtJpy(amt)}</span></div>
+      <div class="settle-label">威需還給肥肥豬豬 ${fmtTwd(amt)}</div></div>`;
   }
-  document.getElementById('settleContent').innerHTML = html;
+  el.innerHTML = html;
 }
 
-// Modal
-function selectExpenseType(type) {
-  selectedType = type;
-  const hints = { personal:'個人支出：從付款人預算扣除', shared:'共同支出：兩人平分，各扣一半', proxy:'代購：不計入個人預算' };
-  document.getElementById('typeHint').textContent = hints[type];
-  document.getElementById('typePersonal').className = 'payer-btn' + (type==='personal'?' selected-wei':'');
-  document.getElementById('typeShared').className = 'payer-btn' + (type==='shared'?' selected-wei':'');
-  document.getElementById('typeProxy').className = 'payer-btn' + (type==='proxy'?' selected-wei':'');
-  // Auto-set splits
-  if (type==='shared') { splitWeiOn=true; splitFatOn=true; document.getElementById('splitWeiPct').value=50; document.getElementById('splitFatPct').value=50; updateSplitUI(); }
-  if (type==='personal') {
-    splitWeiOn = selectedPayer==='wei'; splitFatOn = selectedPayer==='fat';
-    document.getElementById('splitWeiPct').value = selectedPayer==='wei'?100:0;
-    document.getElementById('splitFatPct').value = selectedPayer==='fat'?100:0;
-    updateSplitUI();
-  }
-  // Show/hide proxy fields
-  proxyOn = type==='proxy';
-  document.getElementById('proxySwitch').classList.toggle('on', proxyOn);
-  document.getElementById('proxyFields').classList.toggle('show', proxyOn);
-  if (proxyOn) renderProxyPersonList();
-}
-
-function saveBudgets() {
-  budgets.wei = parseInt(document.getElementById('budgetWeiInput').value)||0;
-  budgets.fat = parseInt(document.getElementById('budgetFatInput').value)||0;
-  localStorage.setItem('budgets', JSON.stringify(budgets));
-  render();
-  alert('預算已儲存！');
+// ── Modal ─────────────────────────────────────────────
+function renderCatPicker() {
+  document.getElementById('catPicker').innerHTML = Object.entries(CATS).map(([cat,icon])=>
+    `<button class="cat-pick-btn ${cat===currentCat?'selected':''}" data-cat="${cat}" onclick="selectCat(this)">${icon}<span>${cat}</span></button>`
+  ).join('');
 }
 
 function openModal() {
-  editingId = null;
-  document.getElementById('modalTitle').textContent = '新增支出';
-  document.getElementById('expenseName').value = '';
-  document.getElementById('expenseAmt').value = '';
-  document.getElementById('expenseNote').value = '';
-  document.getElementById('expenseDate').value = new Date().toISOString().slice(0,10);
-  document.getElementById('twdPreview').textContent = '';
-  document.getElementById('delBtn').style.display = 'none';
-  selectedCat = '餐飲'; selectedPayer = 'wei'; selectedType = 'shared';
-  splitWeiOn = true; splitFatOn = true;
-  proxyOn = false; proxyAmounts = {};
-  document.getElementById('splitWeiPct').value = 50;
-  document.getElementById('splitFatPct').value = 50;
-  document.getElementById('proxySwitch').classList.remove('on');
-  document.getElementById('proxyFields').classList.remove('show');
-  updateSplitUI(); updatePayerUI(); updateCatUI(); selectExpenseType('shared');
-  document.getElementById('modalBg').classList.add('show');
-}
-  document.getElementById('proxySwitch').classList.toggle('on', proxyOn);
-  document.getElementById('proxyFields').classList.toggle('show', proxyOn);
-  if (proxyOn) renderProxyPersonList();
-}
-
-function renderProxyPersonList() {
-  const el = document.getElementById('proxyPersonList');
-  if (!el) return;
-  if (!proxyPeople.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:4px 0">尚無代購對象，請新增</div>'; return; }
-  el.innerHTML = proxyPeople.map(name => `
-    <div class="proxy-person-row">
-      <span class="proxy-person-name">${escH(name)}</span>
-      <input class="proxy-person-amt" type="number" placeholder="¥ 金額"
-        id="proxyAmt_${escH(name.replace(/\s/g,'_'))}"
-        value="${proxyAmounts[name]||''}"
-        oninput="proxyAmounts['${escH(name)}'] = parseInt(this.value)||0"
-        inputmode="numeric">
-    </div>`).join('');
-}
-
-function addProxyPerson() {
-  const input = document.getElementById('proxyNewName');
-  const name = input.value.trim();
-  if (!name) { alert('請輸入名字'); return; }
-  if (proxyPeople.includes(name)) { alert('已有這個人了'); return; }
-  proxyPeople.push(name);
-  localStorage.setItem('proxyPeople', JSON.stringify(proxyPeople));
-  input.value = '';
-  renderProxyPersonList();
-}
-
-function openModal() {
-  editingId = null;
-  document.getElementById('modalTitle').textContent = '新增支出';
-  document.getElementById('expenseName').value = '';
-  document.getElementById('expenseAmt').value = '';
-  document.getElementById('expenseNote').value = '';
-  document.getElementById('expenseDate').value = new Date().toISOString().slice(0,10);
-  document.getElementById('twdPreview').textContent = '';
-  document.getElementById('delBtn').style.display = 'none';
-  selectedCat = '餐飲'; selectedPayer = 'wei';
-  splitWeiOn = true; splitFatOn = true;
-  proxyOn = false; proxyAmounts = {};
-  document.getElementById('splitWeiPct').value = 50;
-  document.getElementById('splitFatPct').value = 50;
-  document.getElementById('proxySwitch').classList.remove('on');
-  document.getElementById('proxyFields').classList.remove('show');
-  updateSplitUI(); updatePayerUI(); updateCatUI();
+  editingId=null;
+  document.getElementById('modalTitle').textContent='新增支出';
+  document.getElementById('expenseName').value='';
+  document.getElementById('expenseAmt').value='';
+  document.getElementById('expenseNote').value='';
+  document.getElementById('expenseDate').value=getTodayStr();
+  document.getElementById('twdPreview').textContent='';
+  document.getElementById('delBtn').style.display='none';
+  currentCat='餐飲'; currentPayer='wei'; currentType='shared';
+  splitWeiOn=true; splitFatOn=true; proxyAmounts={};
+  document.getElementById('splitWeiPct').value=50;
+  document.getElementById('splitFatPct').value=50;
+  renderCatPicker(); updatePayerUI(); applyType('shared');
   document.getElementById('modalBg').classList.add('show');
 }
 
 function openEdit(id) {
-  const e = expenses.find(x => x.id === id);
-  if (!e) return;
-  editingId = id;
-  document.getElementById('modalTitle').textContent = '編輯支出';
-  document.getElementById('expenseName').value = e.name;
-  document.getElementById('expenseAmt').value = e.amount;
-  document.getElementById('expenseNote').value = e.note || '';
-  document.getElementById('expenseDate').value = e.date;
-  document.getElementById('delBtn').style.display = 'block';
-  selectedCat = e.category; selectedPayer = e.payer;
-  splitWeiOn = (e.splits?.wei||0) > 0;
-  splitFatOn = (e.splits?.fat||0) > 0;
-  document.getElementById('splitWeiPct').value = e.splits?.wei ?? 50;
-  document.getElementById('splitFatPct').value = e.splits?.fat ?? 50;
-  // Proxy
-  proxyOn = !!(e.proxyItems && e.proxyItems.length);
-  proxyAmounts = {};
-  if (e.proxyItems) e.proxyItems.forEach(p => { proxyAmounts[p.name] = p.amount; });
-  document.getElementById('proxySwitch').classList.toggle('on', proxyOn);
-  document.getElementById('proxyFields').classList.toggle('show', proxyOn);
-  if (proxyOn) renderProxyPersonList();
-  updateSplitUI(); updatePayerUI(); updateCatUI(); updateTwdPreview();
+  const e = expenses.find(x=>x.id===id); if(!e)return;
+  editingId=id;
+  document.getElementById('modalTitle').textContent='編輯支出';
+  document.getElementById('expenseName').value=e.name;
+  document.getElementById('expenseAmt').value=e.amount;
+  document.getElementById('expenseNote').value=e.note||'';
+  document.getElementById('expenseDate').value=e.date;
+  document.getElementById('delBtn').style.display='block';
+  currentCat=e.category; currentPayer=e.payer; currentType=e.expType||'personal';
+  splitWeiOn=(e.splits?.wei||0)>0; splitFatOn=(e.splits?.fat||0)>0;
+  document.getElementById('splitWeiPct').value=e.splits?.wei??50;
+  document.getElementById('splitFatPct').value=e.splits?.fat??50;
+  proxyAmounts={};
+  (e.proxyItems||[]).forEach(p=>{ proxyAmounts[p.name]=p.amount; });
+  renderCatPicker(); updatePayerUI(); updateSplitUI(); applyType(currentType);
+  updateTwdPreview();
   document.getElementById('modalBg').classList.add('show');
 }
 
 function closeModal() { document.getElementById('modalBg').classList.remove('show'); }
-function closeModalOutside(e) { if (e.target === document.getElementById('modalBg')) closeModal(); }
+function closeModalOutside(e) { if(e.target===document.getElementById('modalBg')) closeModal(); }
 
-function selectCat(btn) { selectedCat = btn.dataset.cat; updateCatUI(); }
-function updateCatUI() {
-  document.querySelectorAll('.cat-pick-btn').forEach(b => b.classList.toggle('selected', b.dataset.cat===selectedCat));
+function selectCat(btn) {
+  currentCat=btn.dataset.cat;
+  document.querySelectorAll('.cat-pick-btn').forEach(b=>b.classList.toggle('selected',b.dataset.cat===currentCat));
 }
-function selectPayer(p) { selectedPayer = p; updatePayerUI(); }
+
+function selectType(btn) { applyType(btn.dataset.type); }
+function applyType(type) {
+  currentType=type;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.toggle('selected',b.dataset.type===type));
+  document.getElementById('typeHint').textContent=TYPE_HINTS[type]||'';
+  const isProxy = type==='proxy';
+  const isShared = type==='shared';
+  document.getElementById('proxyField').style.display = isProxy?'block':'none';
+  if (isShared) {
+    splitWeiOn=true; splitFatOn=true;
+    document.getElementById('splitWeiPct').value=50;
+    document.getElementById('splitFatPct').value=50;
+    updateSplitUI();
+  } else if (type==='personal') {
+    splitWeiOn=currentPayer==='wei'; splitFatOn=currentPayer==='fat';
+    document.getElementById('splitWeiPct').value=currentPayer==='wei'?100:0;
+    document.getElementById('splitFatPct').value=currentPayer==='fat'?100:0;
+    updateSplitUI();
+  }
+  if (isProxy) renderProxyFieldsModal();
+}
+
+function selectPayer(btn) {
+  currentPayer=btn.dataset.payer;
+  updatePayerUI();
+  if (currentType==='personal') applyType('personal');
+}
 function updatePayerUI() {
-  document.getElementById('payerWei').className = 'payer-btn' + (selectedPayer==='wei'?' selected-wei':'');
-  document.getElementById('payerFat').className = 'payer-btn' + (selectedPayer==='fat'?' selected-fat':'');
+  document.querySelectorAll('#payerPicker .payer-btn').forEach(b => {
+    b.className='payer-btn'+(b.dataset.payer===currentPayer?(b.dataset.payer==='wei'?' sel-wei':' sel-fat'):'');
+  });
 }
+
 function toggleSplit(who) {
-  if (who==='wei') splitWeiOn = !splitWeiOn;
-  else splitFatOn = !splitFatOn;
-  updateSplitUI();
-  syncPct();
+  if(who==='wei') { splitWeiOn=!splitWeiOn; } else { splitFatOn=!splitFatOn; }
+  syncPct(); updateSplitUI();
 }
 function updateSplitUI() {
-  document.getElementById('splitWeiCheck').className = 'split-check' + (splitWeiOn?' on':'');
-  document.getElementById('splitFatCheck').className = 'split-check' + (splitFatOn?' on':'');
-  document.getElementById('splitWeiCheck').innerHTML = splitWeiOn ? '✓' : '';
-  document.getElementById('splitFatCheck').innerHTML = splitFatOn ? '✓' : '';
-  document.getElementById('splitWeiPct').disabled = !splitWeiOn;
-  document.getElementById('splitFatPct').disabled = !splitFatOn;
-}
-function syncSplit(who) {
-  if (!splitWeiOn || !splitFatOn) return;
-  const weiV = parseInt(document.getElementById('splitWeiPct').value)||0;
-  const fatV = parseInt(document.getElementById('splitFatPct').value)||0;
-  if (who==='wei') document.getElementById('splitFatPct').value = Math.max(0, 100-weiV);
-  else document.getElementById('splitWeiPct').value = Math.max(0, 100-fatV);
+  document.getElementById('splitWeiCheck').className='split-check'+(splitWeiOn?' on':'');
+  document.getElementById('splitWeiCheck').textContent=splitWeiOn?'✓':'';
+  document.getElementById('splitFatCheck').className='split-check'+(splitFatOn?' on':'');
+  document.getElementById('splitFatCheck').textContent=splitFatOn?'✓':'';
+  document.getElementById('splitWeiPct').disabled=!splitWeiOn;
+  document.getElementById('splitFatPct').disabled=!splitFatOn;
 }
 function syncPct() {
-  if (splitWeiOn && splitFatOn) { document.getElementById('splitWeiPct').value=50; document.getElementById('splitFatPct').value=50; }
-  else if (splitWeiOn) { document.getElementById('splitWeiPct').value=100; document.getElementById('splitFatPct').value=0; }
-  else if (splitFatOn) { document.getElementById('splitWeiPct').value=0; document.getElementById('splitFatPct').value=100; }
-  else { document.getElementById('splitWeiPct').value=0; document.getElementById('splitFatPct').value=0; }
+  if(splitWeiOn&&splitFatOn){document.getElementById('splitWeiPct').value=50;document.getElementById('splitFatPct').value=50;}
+  else if(splitWeiOn){document.getElementById('splitWeiPct').value=100;document.getElementById('splitFatPct').value=0;}
+  else if(splitFatOn){document.getElementById('splitWeiPct').value=0;document.getElementById('splitFatPct').value=100;}
+  else{document.getElementById('splitWeiPct').value=0;document.getElementById('splitFatPct').value=0;}
+}
+function syncSplit(who) {
+  if(!splitWeiOn||!splitFatOn)return;
+  const v=parseInt(document.getElementById('split'+who.charAt(0).toUpperCase()+who.slice(1)+'Pct').value)||0;
+  const other=who==='wei'?'Fat':'Wei';
+  document.getElementById('split'+other+'Pct').value=Math.max(0,100-v);
 }
 
 function updateTwdPreview() {
-  const v = parseInt(document.getElementById('expenseAmt').value)||0;
-  document.getElementById('twdPreview').textContent = v && rate ? `≈ NT$${Math.round(v*rate).toLocaleString()}` : '';
+  const v=parseInt(document.getElementById('expenseAmt').value)||0;
+  document.getElementById('twdPreview').textContent=v&&rate?`≈ NT$${Math.round(v*rate).toLocaleString()}`:'';
 }
 
+// ── Proxy in modal ────────────────────────────────────
+function renderProxyFieldsModal() {
+  const el=document.getElementById('proxyFields'); if(!el)return;
+  if(!proxyPeople.length){el.innerHTML='<div style="font-size:12px;color:var(--text3)">尚無代購對象，請在下方新增</div>';return;}
+  el.innerHTML=proxyPeople.map(name=>`
+    <div class="proxy-person-row">
+      <span class="proxy-person-name">${escH(name)}</span>
+      <input class="proxy-person-amt" type="number" placeholder="¥ 金額"
+        value="${proxyAmounts[name]||''}"
+        oninput="proxyAmounts['${escH(name)}']=parseInt(this.value)||0"
+        inputmode="numeric">
+    </div>`).join('');
+}
+
+function addProxyPersonModal() {
+  const input=document.getElementById('proxyNewNameModal');
+  const name=input.value.trim(); if(!name){return;}
+  if(!proxyPeople.includes(name)){proxyPeople.push(name);localStorage.setItem('proxyPeople',JSON.stringify(proxyPeople));}
+  input.value='';
+  renderProxyFieldsModal();
+  renderProxyPeopleSettings();
+}
+
+// ── Settings ──────────────────────────────────────────
+function renderProxyPeopleSettings() {
+  const el=document.getElementById('proxyPeopleList'); if(!el)return;
+  if(!proxyPeople.length){el.innerHTML='<div style="font-size:12px;color:var(--text3);margin-bottom:8px">尚無代購對象</div>';return;}
+  el.innerHTML=proxyPeople.map((name,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border)">
+      <span style="flex:1;font-size:14px;color:var(--text)">${escH(name)}</span>
+      <button onclick="removeProxyPerson(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:13px">移除</button>
+    </div>`).join('');
+}
+
+function addProxyPerson() {
+  const input=document.getElementById('newProxyName');
+  const name=input.value.trim(); if(!name){alert('請輸入名字');return;}
+  if(proxyPeople.includes(name)){alert('已有這個人了');return;}
+  proxyPeople.push(name); localStorage.setItem('proxyPeople',JSON.stringify(proxyPeople));
+  input.value=''; renderProxyPeopleSettings();
+}
+
+function removeProxyPerson(i) {
+  if(!confirm(`確定移除「${proxyPeople[i]}」？`))return;
+  proxyPeople.splice(i,1); localStorage.setItem('proxyPeople',JSON.stringify(proxyPeople));
+  renderProxyPeopleSettings();
+}
+
+function saveBudgets() {
+  budgets.wei=parseInt(document.getElementById('budgetWeiInput').value)||0;
+  budgets.fat=parseInt(document.getElementById('budgetFatInput').value)||0;
+  localStorage.setItem('budgets',JSON.stringify(budgets));
+  render(); alert('預算已儲存！');
+}
+
+// ── Save/Delete ───────────────────────────────────────
 function saveExpense() {
-  const name = document.getElementById('expenseName').value.trim();
-  const amt = parseInt(document.getElementById('expenseAmt').value)||0;
-  const date = document.getElementById('expenseDate').value;
-  if (!name) { alert('請輸入項目名稱'); return; }
-  if (!amt) { alert('請輸入金額'); return; }
-  const weiPct = parseInt(document.getElementById('splitWeiPct').value)||0;
-  const fatPct = parseInt(document.getElementById('splitFatPct').value)||0;
-
-  // Proxy items
-  const proxyItems = proxyOn
-    ? Object.entries(proxyAmounts).filter(([,v])=>v>0).map(([n,v])=>({name:n,amount:v}))
-    : [];
-
-  const expense = {
-    id: editingId || Date.now().toString(),
-    name, amount: amt, category: selectedCat,
-    payer: selectedPayer, date,
-    expenseType: selectedType,
-    note: document.getElementById('expenseNote').value.trim(),
-    splits: { wei: weiPct, fat: fatPct },
+  const name=document.getElementById('expenseName').value.trim();
+  const amt=parseInt(document.getElementById('expenseAmt').value)||0;
+  const date=document.getElementById('expenseDate').value;
+  if(!name){alert('請輸入項目名稱');return;}
+  if(!amt){alert('請輸入金額');return;}
+  const wp=parseInt(document.getElementById('splitWeiPct').value)||0;
+  const fp=parseInt(document.getElementById('splitFatPct').value)||0;
+  const proxyItems=currentType==='proxy'
+    ?Object.entries(proxyAmounts).filter(([,v])=>v>0).map(([n,v])=>({name:n,amount:v}))
+    :[];
+  const expense={
+    id:editingId||Date.now().toString(),
+    name,amount:amt,category:currentCat,
+    payer:currentPayer,date,expType:currentType,
+    note:document.getElementById('expenseNote').value.trim(),
+    splits:{wei:wp,fat:fp},
     proxyItems
   };
-  if (editingId) {
-    const idx = expenses.findIndex(e=>e.id===editingId);
-    if (idx >= 0) expenses[idx] = expense;
-  } else {
-    expenses.push(expense);
-  }
-  localStorage.setItem('expenses', JSON.stringify(expenses));
+  if(editingId){const idx=expenses.findIndex(e=>e.id===editingId);if(idx>=0)expenses[idx]=expense;}
+  else{expenses.push(expense);}
+  localStorage.setItem('expenses',JSON.stringify(expenses));
   closeModal(); render();
 }
 
 function deleteExpense() {
-  if (!confirm('確定刪除？')) return;
-  expenses = expenses.filter(e => e.id !== editingId);
-  localStorage.setItem('expenses', JSON.stringify(expenses));
+  if(!confirm('確定刪除？'))return;
+  expenses=expenses.filter(e=>e.id!==editingId);
+  localStorage.setItem('expenses',JSON.stringify(expenses));
   closeModal(); render();
 }
 
-function clearAllData() {
-  if (!confirm('確定清除所有資料？這個動作無法復原。')) return;
-  expenses = []; budgets = {wei:0,fat:0};
-  localStorage.removeItem('expenses');
-  localStorage.removeItem('budgets');
-  render();
-}
+// ── Data ──────────────────────────────────────────────
 function exportData() {
-  const data = JSON.stringify({ expenses, budgets, rate }, null, 2);
+  const data=JSON.stringify({expenses,budgets,rate},null,2);
   navigator.clipboard.writeText(data).then(()=>alert('已複製到剪貼板！')).catch(()=>alert(data));
 }
 
-function escH(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function clearAllData() {
+  if(!confirm('確定清除所有資料？此動作無法復原。'))return;
+  expenses=[];localStorage.removeItem('expenses');
+  render(); alert('已清除！');
 }
+
+function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
 </body>
 </html>
