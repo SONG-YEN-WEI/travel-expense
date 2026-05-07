@@ -150,6 +150,12 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 .action-btn{width:100%;padding:11px;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit;margin-bottom:8px;text-align:left}
 .action-btn.danger{background:none;border-color:var(--red);color:var(--red)}
 .version-tag{font-size:11px;color:var(--text3);text-align:center;margin-top:16px}
+.trans-type-btn{background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;padding:6px 4px;font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;text-align:center}
+.trans-type-btn.selected{border-color:var(--accent);color:var(--accent);background:rgba(108,143,240,0.1)}
+.status-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.status-reserved{background:rgba(240,180,41,0.2);color:var(--yellow)}
+.status-planned{background:rgba(108,143,240,0.15);color:var(--accent)}
+.status-paid{background:rgba(78,203,141,0.15);color:var(--green)}
 </style>
 </head>
 <body>
@@ -258,8 +264,51 @@ body{display:flex;flex-direction:column;min-height:100dvh}
     </div>
 
     <div class="field">
+      <div class="field-label">付款狀態</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="statusPicker">
+        <button class="type-btn selected" data-status="paid" onclick="selectStatus(this)">✅<span>已付款</span></button>
+        <button class="type-btn" data-status="reserved" onclick="selectStatus(this)">🔖<span>預定中</span></button>
+        <button class="type-btn" data-status="planned" onclick="selectStatus(this)">📅<span>現場付款</span></button>
+      </div>
+      <div id="statusHint" style="font-size:11px;color:var(--text2);margin-top:6px;padding:6px 8px;background:var(--surface2);border-radius:6px">已付款：計入花費統計</div>
+    </div>
+
+    <div class="field">
       <div class="field-label">類別</div>
       <div class="cat-picker" id="catPicker"></div>
+    </div>
+
+    <!-- 交通快速輸入（選交通類別時顯示）-->
+    <div class="field" id="transportField" style="display:none">
+      <div class="field-label">🚃 交通快速輸入</div>
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <input type="text" id="transFrom" placeholder="起站" style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:8px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit">
+          <span style="color:var(--text3);font-size:16px">→</span>
+          <input type="text" id="transTo" placeholder="終站" style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:8px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:12px;color:var(--text2);flex-shrink:0">每人 ¥</span>
+          <input type="number" id="transPerPerson" placeholder="票價" inputmode="numeric"
+            style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:8px 10px;font-size:15px;color:var(--text);outline:none;font-family:inherit"
+            oninput="calcTransport()">
+          <span style="font-size:12px;color:var(--text2);flex-shrink:0">× 人數</span>
+          <select id="transPeople" onchange="calcTransport()"
+            style="background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:8px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit">
+            <option value="2">2人</option>
+            <option value="1">1人</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button onclick="selectTransType('地鐵')" class="trans-type-btn" style="flex:1;min-width:60px">🚇 地鐵</button>
+          <button onclick="selectTransType('電車')" class="trans-type-btn" style="flex:1;min-width:60px">🚃 電車</button>
+          <button onclick="selectTransType('巴士')" class="trans-type-btn" style="flex:1;min-width:60px">🚌 巴士</button>
+          <button onclick="selectTransType('計程車')" class="trans-type-btn" style="flex:1;min-width:60px">🚕 計程車</button>
+        </div>
+        <button onclick="applyTransport()" style="width:100%;padding:9px;background:var(--accent2);border:none;border-radius:6px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          套用到金額欄位
+        </button>
+      </div>
     </div>
 
     <div class="field">
@@ -332,7 +381,8 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 </div>
 
 <script>
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.2.1';
+const FOOD_CATS = ['餐飲','零食'];
 const TRIP_DAYS = ['2025-05-13','2025-05-14','2025-05-15','2025-05-16','2025-05-17','2025-05-18','2025-05-19'];
 const DAY_LABELS = ['5/13 鎌倉・橫濱','5/14 江之島・鎌倉','5/15 八景島・新橋','5/16 澀谷・明治神宮','5/17 池袋・淺草','5/18 原宿・新宿','5/19 回程'];
 const CATS = {'餐飲':'🍜','交通':'🚃','購物':'🛍️','景點':'🎡','住宿':'🏨','藥妝':'💊','零食':'🍡','其他':'📌'};
@@ -343,7 +393,13 @@ const TABS = ['summary','budget','list','proxy','settle','settings'];
 
 // State
 let expenses = JSON.parse(localStorage.getItem('expenses')||'[]');
-let budgets = JSON.parse(localStorage.getItem('budgets')||'{"wei":0,"fat":0}');
+// budgets: { defaultWei, defaultFat, days: { 'YYYY-MM-DD': { wei, fat } } }
+let budgets = JSON.parse(localStorage.getItem('budgets')||'{"defaultWei":0,"defaultFat":0,"days":{}}');
+// Migrate old format
+if ('wei' in budgets && !('defaultWei' in budgets)) {
+  budgets = { defaultWei: budgets.wei||0, defaultFat: budgets.fat||0, days: {} };
+  localStorage.setItem('budgets', JSON.stringify(budgets));
+}
 let rate = parseFloat(localStorage.getItem('rate')||'0');
 let proxyPeople = JSON.parse(localStorage.getItem('proxyPeople')||'[]');
 let editingId = null;
@@ -352,12 +408,86 @@ let currentPayer = 'wei';
 let currentCat = '餐飲';
 let splitWeiOn = true, splitFatOn = true;
 let proxyAmounts = {};
+let currentStatus = 'paid';
+let currentTransType = '';
+
+const STATUS_HINTS = {
+  paid: '已付款：計入花費統計與預算',
+  reserved: '預定中：已付訂金或預購，計入花費',
+  planned: '現場付款：尚未付款，僅作預算參考（不計入已花費）'
+};
+
+function selectStatus(btn) {
+  currentStatus = btn.dataset.status;
+  document.querySelectorAll('#statusPicker .type-btn').forEach(b => b.classList.toggle('selected', b.dataset.status===currentStatus));
+  document.getElementById('statusHint').textContent = STATUS_HINTS[currentStatus]||'';
+}
+
+function selectTransType(type) {
+  currentTransType = type;
+  document.querySelectorAll('.trans-type-btn').forEach(b => {
+    b.classList.toggle('selected', b.textContent.includes(type));
+  });
+  // Auto fill name
+  const from = document.getElementById('transFrom').value.trim();
+  const to = document.getElementById('transTo').value.trim();
+  if (from || to) updateTransName();
+}
+
+function updateTransName() {
+  const from = document.getElementById('transFrom').value.trim();
+  const to = document.getElementById('transTo').value.trim();
+  const type = currentTransType;
+  if (from || to) {
+    const name = [type, from&&to?`${from}→${to}`:from||to].filter(Boolean).join(' ');
+    document.getElementById('expenseName').value = name;
+  }
+}
+
+function calcTransport() {
+  const per = parseInt(document.getElementById('transPerPerson').value)||0;
+  const people = parseInt(document.getElementById('transPeople').value)||2;
+  const total = per * people;
+  if (total > 0) {
+    document.getElementById('expenseAmt').value = total;
+    updateTwdPreview();
+  }
+  updateTransName();
+}
+
+function applyTransport() {
+  const from = document.getElementById('transFrom').value.trim();
+  const to = document.getElementById('transTo').value.trim();
+  const per = parseInt(document.getElementById('transPerPerson').value)||0;
+  const people = parseInt(document.getElementById('transPeople').value)||2;
+  if (!per) { alert('請輸入每人票價'); return; }
+  const total = per * people;
+  const type = currentTransType || '交通';
+  const route = from&&to ? `${from}→${to}` : from||to||'';
+  document.getElementById('expenseName').value = [type, route].filter(Boolean).join(' ');
+  document.getElementById('expenseAmt').value = total;
+  updateTwdPreview();
+  // Auto set split based on people count
+  if (people === 1) {
+    splitWeiOn = currentPayer==='wei'; splitFatOn = currentPayer==='fat';
+    document.getElementById('splitWeiPct').value = currentPayer==='wei'?100:0;
+    document.getElementById('splitFatPct').value = currentPayer==='fat'?100:0;
+    updateSplitUI();
+  } else {
+    splitWeiOn=true; splitFatOn=true;
+    document.getElementById('splitWeiPct').value=50;
+    document.getElementById('splitFatPct').value=50;
+    updateSplitUI();
+  }
+}
+  return budgets.days?.[date]?.[person] ?? budgets['default'+person.charAt(0).toUpperCase()+person.slice(1)] ?? 0;
+}
 
 // ── Init ──────────────────────────────────────────────
 window.addEventListener('load', () => {
   document.getElementById('expenseDate').value = getTodayStr();
-  if (budgets.wei) document.getElementById('budgetWeiInput').value = budgets.wei;
-  if (budgets.fat) document.getElementById('budgetFatInput').value = budgets.fat;
+  if (budgets.defaultWei) document.getElementById('budgetWeiInput').value = budgets.defaultWei;
+  if (budgets.defaultFat) document.getElementById('budgetFatInput').value = budgets.defaultFat;
   document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
   renderCatPicker();
   renderProxyPeopleSettings();
@@ -415,11 +545,13 @@ function switchTab(tab, el) {
 function render() { renderSummary(); renderBudget(); renderList(); renderProxy(); renderSettle(); }
 
 function renderSummary() {
-  const total = expenses.reduce((s,e)=>s+e.amount,0);
-  const weiSpent = expenses.reduce((s,e)=>s+(e.splits?.wei||0)*e.amount/100,0);
-  const fatSpent = expenses.reduce((s,e)=>s+(e.splits?.fat||0)*e.amount/100,0);
-  const sharedTotal = expenses.filter(e=>e.expType==='shared').reduce((s,e)=>s+e.amount,0);
-  const totalBudget = (budgets.wei+budgets.fat) * TRIP_DAYS.length;
+  const countable = expenses.filter(e=>e.status!=='planned');
+  const total = countable.reduce((s,e)=>s+e.amount,0);
+  const plannedTotal = expenses.filter(e=>e.status==='planned').reduce((s,e)=>s+e.amount,0);
+  const weiSpent = countable.reduce((s,e)=>s+(e.splits?.wei||0)*e.amount/100,0);
+  const fatSpent = countable.reduce((s,e)=>s+(e.splits?.fat||0)*e.amount/100,0);
+  const sharedTotal = countable.filter(e=>e.expType==='shared').reduce((s,e)=>s+e.amount,0);
+  const totalBudget = TRIP_DAYS.reduce((s,date)=>s+getDayBudget(date,'wei')+getDayBudget(date,'fat'),0);
   const pct = totalBudget ? Math.min(total/totalBudget*100,100) : 0;
 
   document.getElementById('summaryBudgetCard').innerHTML = `
@@ -429,7 +561,8 @@ function renderSummary() {
         <div class="budget-amount">${fmtJpy(total)}</div>
         <div class="budget-twd">${fmtTwd(total)}</div>
       </div>
-      ${sharedTotal?`<div style="font-size:11px;color:var(--text2);margin-bottom:6px">其中共同支出 ${fmtJpy(sharedTotal)}</div>`:''}
+      ${sharedTotal?`<div style="font-size:11px;color:var(--text2);margin-bottom:4px">其中共同支出 ${fmtJpy(sharedTotal)}</div>`:''}
+      ${plannedTotal?`<div style="font-size:11px;color:var(--yellow);margin-bottom:6px">📅 現場待付 ${fmtJpy(plannedTotal)}（未計入花費）</div>`:''}
       ${totalBudget?`
         <div class="progress-bar"><div class="progress-fill ${pct>100?'over':pct>80?'warn':''}" style="width:${pct}%"></div></div>
         <div class="budget-labels"><span>已花 ${Math.round(pct)}%</span><span>總預算 ${fmtJpy(totalBudget)}</span></div>
@@ -438,12 +571,12 @@ function renderSummary() {
 
   document.getElementById('personRow').innerHTML = ['wei','fat'].map(p => {
     const spent = Math.round(p==='wei'?weiSpent:fatSpent);
-    const daily = budgets[p]||0;
+    const todayBudget = getDayBudget(getTodayStr(), p);
     return `<div class="person-card">
       <div class="person-name"><span class="person-dot" style="background:var(--${p})"></span>${PEOPLE[p].name}</div>
       <div class="person-amt" style="color:var(--${p})">${fmtJpy(spent)}</div>
       <div class="person-twd">${fmtTwd(spent)}</div>
-      ${daily?`<div style="font-size:10px;color:var(--text3);margin-top:4px">每日 ${fmtJpy(daily)}</div>`:''}
+      ${todayBudget?`<div style="font-size:10px;color:var(--text3);margin-top:4px">今日額度 ${fmtJpy(todayBudget)}</div>`:''}
     </div>`;
   }).join('');
 
@@ -463,49 +596,123 @@ function renderSummary() {
 
 function renderBudget() {
   const el = document.getElementById('budgetDayContent'); if(!el)return;
-  if (!budgets.wei && !budgets.fat) {
-    el.innerHTML = '<div class="empty">尚未設定每日預算<br>前往「設定」→「每日預算」設定</div>'; return;
-  }
   const today = getTodayStr();
-  el.innerHTML = TRIP_DAYS.map((date,i) => {
+  el.innerHTML = `
+    <div style="background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;letter-spacing:0.06em;text-transform:uppercase">預設每日額度（未單獨設定的天套用此值）</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:12px;color:var(--wei);width:70px;flex-shrink:0">🔵 威 ¥</span>
+        <input type="number" id="budgetWeiInput" value="${budgets.defaultWei||''}" placeholder="0"
+          style="flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:15px;color:var(--text);outline:none;font-family:inherit"
+          oninput="saveBudgetsQuick()">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:var(--fat);width:70px;flex-shrink:0">🩷 肥肥 ¥</span>
+        <input type="number" id="budgetFatInput" value="${budgets.defaultFat||''}" placeholder="0"
+          style="flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:15px;color:var(--text);outline:none;font-family:inherit"
+          oninput="saveBudgetsQuick()">
+      </div>
+    </div>` +
+  TRIP_DAYS.map((date,i) => {
     const isToday = date===today, isPast = date<today;
-    const weiSpent = Math.round(expenses.filter(e=>e.date===date).reduce((s,e)=>s+(e.splits?.wei||0)*e.amount/100,0));
-    const fatSpent = Math.round(expenses.filter(e=>e.date===date).reduce((s,e)=>s+(e.splits?.fat||0)*e.amount/100,0));
-    const shared = Math.round(expenses.filter(e=>e.date===date&&e.expType==='shared').reduce((s,e)=>s+e.amount,0));
-    const wd = budgets.wei||0, fd = budgets.fat||0;
+    const dayOverride = budgets.days?.[date];
+    const wd = getDayBudget(date,'wei'), fd = getDayBudget(date,'fat');
+    const weiSpent = Math.round(expenses.filter(e=>e.date===date&&e.status!=='planned').reduce((s,e)=>s+(e.splits?.wei||0)*e.amount/100,0));
+    const fatSpent = Math.round(expenses.filter(e=>e.date===date&&e.status!=='planned').reduce((s,e)=>s+(e.splits?.fat||0)*e.amount/100,0));
+    const shared = Math.round(expenses.filter(e=>e.date===date&&e.expType==='shared'&&e.status!=='planned').reduce((s,e)=>s+e.amount,0));
+    const plannedDay = Math.round(expenses.filter(e=>e.date===date&&e.status==='planned').reduce((s,e)=>s+e.amount,0));
     const wp = wd ? Math.min(weiSpent/wd*100,100) : 0;
     const fp = fd ? Math.min(fatSpent/fd*100,100) : 0;
-    return `<div class="day-budget-card ${isToday?'today':''}">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    return `<div class="day-budget-card ${isToday?'today':''}" id="daycard-${date}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div>
-          <span style="font-size:14px;font-weight:600;color:${isToday?'var(--accent)':'var(--text)'}">${DAY_LABELS[i]}</span>
+          <span style="font-size:13px;font-weight:600;color:${isToday?'var(--accent)':'var(--text)'}">${DAY_LABELS[i]}</span>
           ${isToday?'<span style="font-size:9px;background:var(--accent);color:#0a0a1a;border-radius:3px;padding:1px 5px;margin-left:5px">今天</span>':''}
-          ${isPast&&!isToday?'<span style="font-size:10px;color:var(--text3);margin-left:4px">已結束</span>':''}
+          ${dayOverride?'<span style="font-size:9px;background:rgba(240,180,41,0.2);color:var(--yellow);border-radius:3px;padding:1px 5px;margin-left:4px">自訂</span>':''}
         </div>
-        ${shared?`<span style="font-size:11px;color:var(--text2)">共同 ${fmtJpy(shared)}</span>`:''}
+        <div style="display:flex;align-items:center;gap:6px">
+          ${shared?`<span style="font-size:10px;color:var(--text2)">共同 ${fmtJpy(shared)}</span>`:''}
+          ${plannedDay?`<span style="font-size:10px;color:var(--yellow)">📅${fmtJpy(plannedDay)}</span>`:''}
+          <button onclick="toggleDayEdit('${date}')" style="background:none;border:0.5px solid var(--border2);border-radius:4px;padding:3px 8px;font-size:11px;color:var(--text2);cursor:pointer">調整</button>
+          ${dayOverride?`<button onclick="resetDayBudget('${date}')" style="background:none;border:none;font-size:11px;color:var(--red);cursor:pointer">重置</button>`:''}
+        </div>
       </div>
+
+      <div class="day-edit-panel" id="edit-${date}" style="display:none;background:var(--surface2);border-radius:6px;padding:10px;margin-bottom:8px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px">單獨設定此天的額度（留空則套用預設值）</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:12px;color:var(--wei);width:60px;flex-shrink:0">🔵 威 ¥</span>
+          <input type="number" id="daywei-${date}" value="${dayOverride?.wei||''}" placeholder="${budgets.defaultWei||'預設'}"
+            style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit"
+            oninput="saveDayBudget('${date}')">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--fat);width:60px;flex-shrink:0">🩷 肥肥 ¥</span>
+          <input type="number" id="dayfat-${date}" value="${dayOverride?.fat||''}" placeholder="${budgets.defaultFat||'預設'}"
+            style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit"
+            oninput="saveDayBudget('${date}')">
+        </div>
+      </div>
+
       ${wd?`<div style="margin-bottom:8px">
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
           <span style="color:var(--wei)">🔵 威</span>
           <span style="color:${weiSpent>wd?'var(--red)':'var(--text2)'}">
-            ${fmtJpy(weiSpent)} / ${fmtJpy(wd)} 
-            ${weiSpent>wd?`<span style="color:var(--red)">超支 ${fmtJpy(weiSpent-wd)}</span>`:`剩 ${fmtJpy(wd-weiSpent)}`}
+            ${fmtJpy(weiSpent)} / ${fmtJpy(wd)}
+            ${weiSpent>wd?`<span style="color:var(--red)"> 超支${fmtJpy(weiSpent-wd)}</span>`:`　剩 ${fmtJpy(wd-weiSpent)}`}
           </span>
         </div>
         <div class="progress-bar"><div class="progress-fill ${weiSpent>wd?'over':wp>80?'warn':''}" style="width:${wp}%;background:var(--wei)"></div></div>
-      </div>`:''}
+      </div>`:'<div style="font-size:11px;color:var(--text3);margin-bottom:6px">威：未設定預算</div>'}
       ${fd?`<div>
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
           <span style="color:var(--fat)">🩷 肥肥豬豬</span>
           <span style="color:${fatSpent>fd?'var(--red)':'var(--text2)'}">
             ${fmtJpy(fatSpent)} / ${fmtJpy(fd)}
-            ${fatSpent>fd?`<span style="color:var(--red)">超支 ${fmtJpy(fatSpent-fd)}</span>`:`剩 ${fmtJpy(fd-fatSpent)}`}
+            ${fatSpent>fd?`<span style="color:var(--red)"> 超支${fmtJpy(fatSpent-fd)}</span>`:`　剩 ${fmtJpy(fd-fatSpent)}`}
           </span>
         </div>
         <div class="progress-bar"><div class="progress-fill ${fatSpent>fd?'over':fp>80?'warn':''}" style="width:${fp}%;background:var(--fat)"></div></div>
-      </div>`:''}
+      </div>`:'<div style="font-size:11px;color:var(--text3)">肥肥豬豬：未設定預算</div>'}
     </div>`;
   }).join('');
+}
+
+function toggleDayEdit(date) {
+  const el = document.getElementById('edit-'+date);
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+  if (el.style.display==='block') document.getElementById('daywei-'+date).focus();
+}
+
+function saveDayBudget(date) {
+  const wVal = parseInt(document.getElementById('daywei-'+date).value);
+  const fVal = parseInt(document.getElementById('dayfat-'+date).value);
+  if (!budgets.days) budgets.days = {};
+  if (!isNaN(wVal) || !isNaN(fVal)) {
+    budgets.days[date] = {
+      wei: isNaN(wVal) ? null : wVal,
+      fat: isNaN(fVal) ? null : fVal
+    };
+  } else {
+    delete budgets.days[date];
+  }
+  localStorage.setItem('budgets', JSON.stringify(budgets));
+  renderBudget();
+}
+
+function resetDayBudget(date) {
+  if (!confirm(`重置 ${date} 的自訂預算？將回到預設值`)) return;
+  delete budgets.days[date];
+  localStorage.setItem('budgets', JSON.stringify(budgets));
+  renderBudget();
+}
+
+function saveBudgetsQuick() {
+  budgets.defaultWei = parseInt(document.getElementById('budgetWeiInput').value)||0;
+  budgets.defaultFat = parseInt(document.getElementById('budgetFatInput').value)||0;
+  localStorage.setItem('budgets', JSON.stringify(budgets));
+  renderBudget();
+  renderSummary();
 }
 
 function renderList() {
@@ -521,10 +728,13 @@ function renderList() {
       const typeBg = {personal:'rgba(108,143,240,0.15)',shared:'rgba(78,203,141,0.15)',proxy:'rgba(240,108,160,0.15)'}[e.expType]||'';
       const typeColor = {personal:'var(--accent)',shared:'var(--green)',proxy:'var(--fat)'}[e.expType]||'';
       const typeLbl = {personal:'個人',shared:'共同',proxy:'代購'}[e.expType]||'';
-      return `<div class="expense-item" onclick="openEdit('${e.id}')">
+      return `<div class="expense-item" onclick="openEdit('${e.id}')" style="${e.status==='planned'?'opacity:0.65':''}">
         <div class="expense-icon" style="background:${CAT_COLORS[e.category]||'#444'}22">${CATS[e.category]||'📌'}</div>
         <div class="expense-info">
-          <div class="expense-name">${escH(e.name)}</div>
+          <div class="expense-name">${escH(e.name)}
+            ${e.status==='reserved'?'<span class="status-badge status-reserved">預定</span>':''}
+            ${e.status==='planned'?'<span class="status-badge status-planned">現場付</span>':''}
+          </div>
           <div class="expense-meta">
             <span style="color:${PEOPLE[e.payer]?.color||'var(--text2)'}">${PEOPLE[e.payer]?.name||e.payer}</span> 付
             <span class="type-badge" style="background:${typeBg};color:${typeColor}">${typeLbl}</span>
@@ -533,7 +743,7 @@ function renderList() {
           </div>
         </div>
         <div class="expense-amt">
-          <div class="expense-jpy">${fmtJpy(e.amount)}</div>
+          <div class="expense-jpy" style="${e.status==='planned'?'color:var(--text3)':''}">${e.status==='planned'?'≈ ':''} ${fmtJpy(e.amount)}</div>
           <div class="expense-twd">${fmtTwd(e.amount)}</div>
         </div>
       </div>`;
@@ -637,10 +847,18 @@ function openModal() {
   document.getElementById('twdPreview').textContent='';
   document.getElementById('delBtn').style.display='none';
   currentCat='餐飲'; currentPayer='wei'; currentType='shared';
+  currentStatus='paid'; currentTransType='';
   splitWeiOn=true; splitFatOn=true; proxyAmounts={};
   document.getElementById('splitWeiPct').value=50;
   document.getElementById('splitFatPct').value=50;
-  renderCatPicker(); updatePayerUI(); applyType('shared');
+  // Reset transport fields
+  document.getElementById('transFrom').value='';
+  document.getElementById('transTo').value='';
+  document.getElementById('transPerPerson').value='';
+  document.getElementById('transPeople').value='2';
+  document.querySelectorAll('.trans-type-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('transportField').style.display='none';
+  renderCatPicker(); updatePayerUI(); applyType('shared'); selectStatus(document.querySelector('[data-status="paid"]'));
   document.getElementById('modalBg').classList.add('show');
 }
 
@@ -654,12 +872,17 @@ function openEdit(id) {
   document.getElementById('expenseDate').value=e.date;
   document.getElementById('delBtn').style.display='block';
   currentCat=e.category; currentPayer=e.payer; currentType=e.expType||'personal';
+  currentStatus=e.status||'paid'; currentTransType='';
   splitWeiOn=(e.splits?.wei||0)>0; splitFatOn=(e.splits?.fat||0)>0;
   document.getElementById('splitWeiPct').value=e.splits?.wei??50;
   document.getElementById('splitFatPct').value=e.splits?.fat??50;
   proxyAmounts={};
   (e.proxyItems||[]).forEach(p=>{ proxyAmounts[p.name]=p.amount; });
   renderCatPicker(); updatePayerUI(); updateSplitUI(); applyType(currentType);
+  // Restore status
+  const statusBtn = document.querySelector(`[data-status="${currentStatus}"]`);
+  if (statusBtn) selectStatus(statusBtn);
+  document.getElementById('transportField').style.display = e.category==='交通'?'block':'none';
   updateTwdPreview();
   document.getElementById('modalBg').classList.add('show');
 }
@@ -668,8 +891,13 @@ function closeModal() { document.getElementById('modalBg').classList.remove('sho
 function closeModalOutside(e) { if(e.target===document.getElementById('modalBg')) closeModal(); }
 
 function selectCat(btn) {
-  currentCat=btn.dataset.cat;
-  document.querySelectorAll('.cat-pick-btn').forEach(b=>b.classList.toggle('selected',b.dataset.cat===currentCat));
+  currentCat = btn.dataset.cat;
+  document.querySelectorAll('.cat-pick-btn').forEach(b => b.classList.toggle('selected', b.dataset.cat===currentCat));
+  document.getElementById('transportField').style.display = currentCat==='交通' ? 'block' : 'none';
+  // 餐飲、零食自動設為共同均攤
+  if (FOOD_CATS.includes(currentCat)) {
+    applyType('shared');
+  }
 }
 
 function selectType(btn) { applyType(btn.dataset.type); }
@@ -784,9 +1012,9 @@ function removeProxyPerson(i) {
 }
 
 function saveBudgets() {
-  budgets.wei=parseInt(document.getElementById('budgetWeiInput').value)||0;
-  budgets.fat=parseInt(document.getElementById('budgetFatInput').value)||0;
-  localStorage.setItem('budgets',JSON.stringify(budgets));
+  budgets.defaultWei = parseInt(document.getElementById('budgetWeiInput').value)||0;
+  budgets.defaultFat = parseInt(document.getElementById('budgetFatInput').value)||0;
+  localStorage.setItem('budgets', JSON.stringify(budgets));
   render(); alert('預算已儲存！');
 }
 
@@ -806,6 +1034,7 @@ function saveExpense() {
     id:editingId||Date.now().toString(),
     name,amount:amt,category:currentCat,
     payer:currentPayer,date,expType:currentType,
+    status:currentStatus,
     note:document.getElementById('expenseNote').value.trim(),
     splits:{wei:wp,fat:fp},
     proxyItems
