@@ -171,9 +171,14 @@ body{display:flex;flex-direction:column;min-height:100dvh}
     <div class="header-title">🗾 東京記帳</div>
     <div class="header-sub">2025/5/13 – 5/19</div>
   </div>
-  <button class="add-btn" onclick="openModal()" aria-label="新增支出">
-    <i class="ti ti-plus"></i>
-  </button>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button id="installBtn" style="display:none;background:var(--green);border:none;border-radius:var(--radius-sm);padding:8px 12px;color:#0a0a1a;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit" onclick="triggerInstall()">
+      ⬇ 安裝
+    </button>
+    <button class="add-btn" onclick="openModal()" aria-label="新增支出">
+      <i class="ti ti-plus"></i>
+    </button>
+  </div>
 </div>
 
 <div class="tabs" id="tabBar">
@@ -232,20 +237,6 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 
   <!-- 設定 -->
   <div id="tab-settings" style="display:none">
-    <div class="section-label">每日預算</div>
-    <div class="settings-card">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">設定每人每日額度，共同支出各扣一半</div>
-      <div class="settings-row">
-        <span class="settings-label">🔵 威 / 日 ¥</span>
-        <input class="settings-input" id="budgetWeiInput" type="number" placeholder="5000" inputmode="numeric">
-      </div>
-      <div class="settings-row">
-        <span class="settings-label">🩷 肥肥豬豬 / 日 ¥</span>
-        <input class="settings-input" id="budgetFatInput" type="number" placeholder="5000" inputmode="numeric">
-      </div>
-      <button class="settings-btn" style="width:100%;margin-top:6px" onclick="saveBudgets()">儲存預算</button>
-    </div>
-
     <div class="section-label">🎌 動漫週邊預算</div>
     <div class="settings-card">
       <div style="font-size:12px;color:var(--text2);margin-bottom:10px">整趟旅行的動漫週邊總額度（個人各自計算）</div>
@@ -453,7 +444,7 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 </div>
 
 <script>
-const APP_VERSION = '1.3.1';
+const APP_VERSION = '1.3.4';
 const FOOD_CATS = ['餐飲','零食'];
 const ANIME_CATS = ['動漫週邊'];
 const TRIP_DAYS = ['2025-05-13','2025-05-14','2025-05-15','2025-05-16','2025-05-17','2025-05-18','2025-05-19'];
@@ -566,8 +557,6 @@ function getDayBudget(date, person) {
 
 window.addEventListener('load', () => {
   document.getElementById('expenseDate').value = getTodayStr();
-  if (budgets.defaultWei) document.getElementById('budgetWeiInput').value = budgets.defaultWei;
-  if (budgets.defaultFat) document.getElementById('budgetFatInput').value = budgets.defaultFat;
   if (animeBudget.wei) document.getElementById('animeBudgetWeiInput').value = animeBudget.wei;
   if (animeBudget.fat) document.getElementById('animeBudgetFatInput').value = animeBudget.fat;
   document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
@@ -579,6 +568,17 @@ window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./expense-sw.js').catch(()=>{});
   }
+
+  // PWA Install prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    window._installPrompt = e;
+    document.getElementById('installBtn').style.display = 'block';
+  });
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('installBtn').style.display = 'none';
+    window._installPrompt = null;
+  });
 });
 
 function getTodayStr() { return new Date().toISOString().slice(0,10); }
@@ -724,13 +724,13 @@ function renderBudget() {
         <span style="font-size:12px;color:var(--wei);width:70px;flex-shrink:0">🔵 威 ¥</span>
         <input type="number" id="budgetWeiInput" value="${budgets.defaultWei||''}" placeholder="0"
           style="flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:15px;color:var(--text);outline:none;font-family:inherit"
-          oninput="saveBudgetsQuick()">
+          onblur="saveBudgetsQuick()">
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:12px;color:var(--fat);width:70px;flex-shrink:0">🩷 肥肥 ¥</span>
         <input type="number" id="budgetFatInput" value="${budgets.defaultFat||''}" placeholder="0"
           style="flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:15px;color:var(--text);outline:none;font-family:inherit"
-          oninput="saveBudgetsQuick()">
+          onblur="saveBudgetsQuick()">
       </div>
     </div>` +
   TRIP_DAYS.map((date,i) => {
@@ -764,13 +764,13 @@ function renderBudget() {
           <span style="font-size:12px;color:var(--wei);width:60px;flex-shrink:0">🔵 威 ¥</span>
           <input type="number" id="daywei-${date}" value="${dayOverride?.wei||''}" placeholder="${budgets.defaultWei||'預設'}"
             style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit"
-            oninput="saveDayBudget('${date}')">
+            onblur="saveDayBudget('${date}')">
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-size:12px;color:var(--fat);width:60px;flex-shrink:0">🩷 肥肥 ¥</span>
           <input type="number" id="dayfat-${date}" value="${dayOverride?.fat||''}" placeholder="${budgets.defaultFat||'預設'}"
             style="flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:14px;color:var(--text);outline:none;font-family:inherit"
-            oninput="saveDayBudget('${date}')">
+            onblur="saveDayBudget('${date}')">
         </div>
       </div>
 
@@ -1296,13 +1296,6 @@ function removeProxyPerson(i) {
   if(!confirm(`確定移除「${proxyPeople[i]}」？`))return;
   proxyPeople.splice(i,1); localStorage.setItem('proxyPeople',JSON.stringify(proxyPeople));
   renderProxyPeopleSettings();
-}
-
-function saveBudgets() {
-  budgets.defaultWei = parseInt(document.getElementById('budgetWeiInput').value)||0;
-  budgets.defaultFat = parseInt(document.getElementById('budgetFatInput').value)||0;
-  localStorage.setItem('budgets', JSON.stringify(budgets));
-  render(); alert('預算已儲存！');
 }
 
 // ── Save/Delete ───────────────────────────────────────
