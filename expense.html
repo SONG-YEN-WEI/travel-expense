@@ -185,6 +185,7 @@ body{display:flex;flex-direction:column;min-height:100dvh}
   <button class="tab active" onclick="switchTab('summary',this)">總覽</button>
   <button class="tab" onclick="switchTab('budget',this)">預算</button>
   <button class="tab" onclick="switchTab('list',this)">明細</button>
+  <button class="tab" onclick="switchTab('card',this)">刷卡建議</button>
   <button class="tab" onclick="switchTab('wishlist',this)">購物清單</button>
   <button class="tab" onclick="switchTab('proxy',this)">代購</button>
   <button class="tab" onclick="switchTab('settle',this)">結算</button>
@@ -213,6 +214,11 @@ body{display:flex;flex-direction:column;min-height:100dvh}
   <!-- 明細 -->
   <div id="tab-list" style="display:none">
     <div id="expenseList"></div>
+  </div>
+
+  <!-- 刷卡建議 -->
+  <div id="tab-card" style="display:none">
+    <div id="cardAdviceContent"></div>
   </div>
 
   <!-- 購物清單 -->
@@ -390,8 +396,24 @@ body{display:flex;flex-direction:column;min-height:100dvh}
     </div>
 
     <div class="field">
-      <div class="field-label">金額（日圓 ¥）</div>
-      <input type="number" id="expenseAmt" placeholder="例：1280" inputmode="numeric" oninput="updateTwdPreview()">
+      <div class="field-label">金額</div>
+      <!-- 幣別切換 -->
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <button id="currBtnJpy" onclick="selectCurrency('jpy',this)"
+          style="flex:1;padding:7px;font-size:12px;font-weight:600;font-family:inherit;border:none;border-radius:var(--radius-sm);cursor:pointer;background:var(--accent);color:#0a0a1a">
+          ¥ 日圓
+        </button>
+        <button id="currBtnTwd" onclick="selectCurrency('twd',this)"
+          style="flex:1;padding:7px;font-size:12px;font-weight:600;font-family:inherit;border:none;border-radius:var(--radius-sm);cursor:pointer;background:var(--surface2);color:var(--text2);border:0.5px solid var(--border2)">
+          NT$ 台幣
+        </button>
+      </div>
+      <div style="position:relative">
+        <span id="currSymbol" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text2);pointer-events:none">¥</span>
+        <input type="number" id="expenseAmt" placeholder="例：1280" inputmode="numeric"
+          style="width:100%;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:11px 12px 11px 28px;font-size:16px;color:var(--text);outline:none;font-family:inherit"
+          oninput="updateAmtPreview()">
+      </div>
       <div id="twdPreview" style="font-size:12px;color:var(--text2);margin-top:4px;text-align:right"></div>
     </div>
 
@@ -444,7 +466,7 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 </div>
 
 <script>
-const APP_VERSION = '1.3.4';
+const APP_VERSION = '1.3.7';
 const FOOD_CATS = ['餐飲','零食'];
 const ANIME_CATS = ['動漫週邊'];
 const TRIP_DAYS = ['2025-05-13','2025-05-14','2025-05-15','2025-05-16','2025-05-17','2025-05-18','2025-05-19'];
@@ -453,7 +475,7 @@ const CATS = {'餐飲':'🍜','交通':'🚃','購物':'🛍️','景點':'🎡'
 const CAT_COLORS = {'餐飲':'#e05555','交通':'#4a6fd4','購物':'#c84ab0','景點':'#e09a30','住宿':'#3a9de0','藥妝':'#4ecb8d','零食':'#e0c030','動漫週邊':'#e060c0','其他':'#8890b8'};
 const PEOPLE = {wei:{name:'威',color:'#6c8ff0'},fat:{name:'肥肥豬豬',color:'#f06ca0'}};
 const TYPE_HINTS = {personal:'個人支出：只從付款人預算扣除',shared:'共同支出：兩人各扣一半預算',proxy:'代購：記錄幫別人買的東西，不計入個人預算'};
-const TABS = ['summary','budget','list','wishlist','proxy','settle','settings'];
+const TABS = ['summary','budget','list','card','wishlist','proxy','settle','settings'];
 
 // State
 let expenses = JSON.parse(localStorage.getItem('expenses')||'[]');
@@ -474,6 +496,7 @@ let splitWeiOn = true, splitFatOn = true;
 let proxyAmounts = {};
 let currentStatus = 'paid';
 let currentTransType = '';
+let currentCurrency = 'jpy'; // 'jpy' | 'twd'
 let animeBudget = JSON.parse(localStorage.getItem('animeBudget')||'{"wei":0,"fat":0}');
 let wishlist = JSON.parse(localStorage.getItem('wishlist')||'[]');
 let editingWishId = null;
@@ -615,6 +638,10 @@ async function fetchRate() {
 function jpy2twd(n) { return rate ? Math.round(n * rate) : null; }
 function fmtJpy(n) { return '¥' + Math.round(n).toLocaleString(); }
 function fmtTwd(n) { const t = jpy2twd(n); return t ? 'NT$' + t.toLocaleString() : ''; }
+function fmtDual(n) {
+  const twd = jpy2twd(Math.round(n));
+  return `<span style="font-variant-numeric:tabular-nums">${fmtJpy(n)}</span>${twd ? `<span style="font-size:0.75em;color:var(--text2);margin-left:4px">NT$${twd.toLocaleString()}</span>` : ''}`;
+}
 
 // ── Tabs ──────────────────────────────────────────────
 function switchTab(tab, el) {
@@ -624,7 +651,9 @@ function switchTab(tab, el) {
 }
 
 // ── Render ────────────────────────────────────────────
-function render() { renderSummary(); renderBudget(); renderList(); renderWishlist(); renderProxy(); renderSettle(); }
+function render() {
+  renderSummary(); renderBudget(); renderList(); renderCardAdvice(); renderWishlist(); renderProxy(); renderSettle();
+}
 
 function renderSummary() {
   const countable = expenses.filter(e=>e.status!=='planned');
@@ -643,12 +672,12 @@ function renderSummary() {
         <div class="budget-amount">${fmtJpy(total)}</div>
         <div class="budget-twd">${fmtTwd(total)}</div>
       </div>
-      ${sharedTotal?`<div style="font-size:11px;color:var(--text2);margin-bottom:4px">其中共同支出 ${fmtJpy(sharedTotal)}</div>`:''}
-      ${plannedTotal?`<div style="font-size:11px;color:var(--yellow);margin-bottom:6px">📅 現場待付 ${fmtJpy(plannedTotal)}（未計入花費）</div>`:''}
+      ${sharedTotal?`<div style="font-size:11px;color:var(--text2);margin-bottom:4px">其中共同支出 ${fmtJpy(sharedTotal)}（${fmtTwd(sharedTotal)}）</div>`:''}
+      ${plannedTotal?`<div style="font-size:11px;color:var(--yellow);margin-bottom:6px">📅 現場待付 ${fmtJpy(plannedTotal)}（${fmtTwd(plannedTotal)}）</div>`:''}
       ${totalBudget?`
         <div class="progress-bar"><div class="progress-fill ${pct>100?'over':pct>80?'warn':''}" style="width:${pct}%"></div></div>
-        <div class="budget-labels"><span>已花 ${Math.round(pct)}%</span><span>總預算 ${fmtJpy(totalBudget)}</span></div>
-      `:`<div style="font-size:11px;color:var(--text3)">前往「設定」設定每日預算</div>`}
+        <div class="budget-labels"><span>已花 ${Math.round(pct)}%</span><span>總預算 ${fmtJpy(totalBudget)}（${fmtTwd(totalBudget)}）</span></div>
+      `:`<div style="font-size:11px;color:var(--text3)">前往「預算」設定每日預算</div>`}
     </div>`;
 
   document.getElementById('personRow').innerHTML = ['wei','fat'].map(p => {
@@ -658,7 +687,7 @@ function renderSummary() {
       <div class="person-name"><span class="person-dot" style="background:var(--${p})"></span>${PEOPLE[p].name}</div>
       <div class="person-amt" style="color:var(--${p})">${fmtJpy(spent)}</div>
       <div class="person-twd">${fmtTwd(spent)}</div>
-      ${todayBudget?`<div style="font-size:10px;color:var(--text3);margin-top:4px">今日額度 ${fmtJpy(todayBudget)}</div>`:''}
+      ${todayBudget?`<div style="font-size:10px;color:var(--text3);margin-top:4px">今日額度 ${fmtJpy(todayBudget)}／${fmtTwd(todayBudget)}</div>`:''}
     </div>`;
   }).join('');
 
@@ -778,8 +807,8 @@ function renderBudget() {
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
           <span style="color:var(--wei)">🔵 威</span>
           <span style="color:${weiSpent>wd?'var(--red)':'var(--text2)'}">
-            ${fmtJpy(weiSpent)} / ${fmtJpy(wd)}
-            ${weiSpent>wd?`<span style="color:var(--red)"> 超支${fmtJpy(weiSpent-wd)}</span>`:`　剩 ${fmtJpy(wd-weiSpent)}`}
+            ${fmtJpy(weiSpent)}(${fmtTwd(weiSpent)}) / ${fmtJpy(wd)}
+            ${weiSpent>wd?`<span style="color:var(--red)"> 超支${fmtJpy(weiSpent-wd)}</span>`:`　剩 ${fmtJpy(wd-weiSpent)}(${fmtTwd(wd-weiSpent)})`}
           </span>
         </div>
         <div class="progress-bar"><div class="progress-fill ${weiSpent>wd?'over':wp>80?'warn':''}" style="width:${wp}%;background:var(--wei)"></div></div>
@@ -788,8 +817,8 @@ function renderBudget() {
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
           <span style="color:var(--fat)">🩷 肥肥豬豬</span>
           <span style="color:${fatSpent>fd?'var(--red)':'var(--text2)'}">
-            ${fmtJpy(fatSpent)} / ${fmtJpy(fd)}
-            ${fatSpent>fd?`<span style="color:var(--red)"> 超支${fmtJpy(fatSpent-fd)}</span>`:`　剩 ${fmtJpy(fd-fatSpent)}`}
+            ${fmtJpy(fatSpent)}(${fmtTwd(fatSpent)}) / ${fmtJpy(fd)}
+            ${fatSpent>fd?`<span style="color:var(--red)"> 超支${fmtJpy(fatSpent-fd)}</span>`:`　剩 ${fmtJpy(fd-fatSpent)}(${fmtTwd(fd-fatSpent)})`}
           </span>
         </div>
         <div class="progress-bar"><div class="progress-fill ${fatSpent>fd?'over':fp>80?'warn':''}" style="width:${fp}%;background:var(--fat)"></div></div>
@@ -854,6 +883,7 @@ function renderList() {
           <div class="expense-name">${escH(e.name)}
             ${e.status==='reserved'?'<span class="status-badge status-reserved">預定</span>':''}
             ${e.status==='planned'?'<span class="status-badge status-planned">現場付</span>':''}
+            ${e.origCurrency==='twd'?'<span class="status-badge" style="background:rgba(78,203,141,0.15);color:var(--green)">台幣</span>':''}
           </div>
           <div class="expense-meta">
             <span style="color:${PEOPLE[e.payer]?.color||'var(--text2)'}">${PEOPLE[e.payer]?.name||e.payer}</span> 付
@@ -1134,7 +1164,7 @@ function openModal() {
   document.getElementById('twdPreview').textContent='';
   document.getElementById('delBtn').style.display='none';
   currentCat='餐飲'; currentPayer='wei'; currentType='shared';
-  currentStatus='paid'; currentTransType='';
+  currentStatus='paid'; currentTransType=''; currentCurrency='jpy';
   splitWeiOn=true; splitFatOn=true; proxyAmounts={};
   document.getElementById('splitWeiPct').value=50;
   document.getElementById('splitFatPct').value=50;
@@ -1146,6 +1176,7 @@ function openModal() {
   document.querySelectorAll('.trans-type-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('transportField').style.display='none';
   renderCatPicker(); updatePayerUI(); applyType('shared'); selectStatus(document.querySelector('[data-status="paid"]'));
+  selectCurrency('jpy', null);
   document.getElementById('modalBg').classList.add('show');
 }
 
@@ -1154,23 +1185,24 @@ function openEdit(id) {
   editingId=id;
   document.getElementById('modalTitle').textContent='編輯支出';
   document.getElementById('expenseName').value=e.name;
-  document.getElementById('expenseAmt').value=e.amount;
+  document.getElementById('expenseAmt').value=e.origCurrency==='twd' ? (e.origAmount||e.amount) : e.amount;
   document.getElementById('expenseNote').value=e.note||'';
   document.getElementById('expenseDate').value=e.date;
   document.getElementById('delBtn').style.display='block';
   currentCat=e.category; currentPayer=e.payer; currentType=e.expType||'personal';
-  currentStatus=e.status||'paid'; currentTransType='';
+  currentStatus=e.status||'paid'; currentTransType=''; currentCurrency=e.origCurrency||'jpy';
   splitWeiOn=(e.splits?.wei||0)>0; splitFatOn=(e.splits?.fat||0)>0;
   document.getElementById('splitWeiPct').value=e.splits?.wei??50;
   document.getElementById('splitFatPct').value=e.splits?.fat??50;
   proxyAmounts={};
   (e.proxyItems||[]).forEach(p=>{ proxyAmounts[p.name]=p.amount; });
   renderCatPicker(); updatePayerUI(); updateSplitUI(); applyType(currentType);
+  selectCurrency(currentCurrency, null);
   // Restore status
   const statusBtn = document.querySelector(`[data-status="${currentStatus}"]`);
   if (statusBtn) selectStatus(statusBtn);
   document.getElementById('transportField').style.display = e.category==='交通'?'block':'none';
-  updateTwdPreview();
+  updateAmtPreview();
   document.getElementById('modalBg').classList.add('show');
 }
 
@@ -1245,9 +1277,38 @@ function syncSplit(who) {
   document.getElementById('split'+other+'Pct').value=Math.max(0,100-v);
 }
 
-function updateTwdPreview() {
-  const v=parseInt(document.getElementById('expenseAmt').value)||0;
-  document.getElementById('twdPreview').textContent=v&&rate?`≈ NT$${Math.round(v*rate).toLocaleString()}`:'';
+function selectCurrency(mode, btn) {
+  currentCurrency = mode;
+  const isJpy = mode === 'jpy';
+  document.getElementById('currBtnJpy').style.cssText = isJpy
+    ? 'flex:1;padding:7px;font-size:12px;font-weight:600;font-family:inherit;border:none;border-radius:var(--radius-sm);cursor:pointer;background:var(--accent);color:#0a0a1a'
+    : 'flex:1;padding:7px;font-size:12px;font-weight:600;font-family:inherit;border:none;border-radius:var(--radius-sm);cursor:pointer;background:var(--surface2);color:var(--text2);border:0.5px solid var(--border2)';
+  document.getElementById('currBtnTwd').style.cssText = !isJpy
+    ? 'flex:1;padding:7px;font-size:12px;font-weight:600;font-family:inherit;border:none;border-radius:var(--radius-sm);cursor:pointer;background:var(--accent);color:#0a0a1a'
+    : 'flex:1;padding:7px;font-size:12px;font-weight:600;font-family:inherit;border:none;border-radius:var(--radius-sm);cursor:pointer;background:var(--surface2);color:var(--text2);border:0.5px solid var(--border2)';
+  document.getElementById('currSymbol').textContent = isJpy ? '¥' : 'NT$';
+  document.getElementById('expenseAmt').placeholder = isJpy ? '例：1280' : '例：270';
+  updateAmtPreview();
+}
+
+function updateAmtPreview() {
+  const v = parseFloat(document.getElementById('expenseAmt').value) || 0;
+  const el = document.getElementById('twdPreview');
+  if (!v) { el.textContent = ''; return; }
+  if (currentCurrency === 'jpy') {
+    el.textContent = rate ? `≈ NT$${Math.round(v * rate).toLocaleString()}` : '';
+  } else {
+    el.textContent = rate ? `≈ ¥${Math.round(v / rate).toLocaleString()}` : '';
+  }
+}
+
+function updateTwdPreview() { updateAmtPreview(); }
+
+function getAmtInJpy() {
+  const v = parseFloat(document.getElementById('expenseAmt').value) || 0;
+  if (!v) return 0;
+  if (currentCurrency === 'jpy') return Math.round(v);
+  return rate ? Math.round(v / rate) : Math.round(v);
 }
 
 // ── Proxy in modal ────────────────────────────────────
@@ -1301,10 +1362,11 @@ function removeProxyPerson(i) {
 // ── Save/Delete ───────────────────────────────────────
 function saveExpense() {
   const name=document.getElementById('expenseName').value.trim();
-  const amt=parseInt(document.getElementById('expenseAmt').value)||0;
+  const amt=getAmtInJpy();
+  const rawInput=parseFloat(document.getElementById('expenseAmt').value)||0;
   const date=document.getElementById('expenseDate').value;
   if(!name){alert('請輸入項目名稱');return;}
-  if(!amt){alert('請輸入金額');return;}
+  if(!rawInput){alert('請輸入金額');return;}
   const wp=parseInt(document.getElementById('splitWeiPct').value)||0;
   const fp=parseInt(document.getElementById('splitFatPct').value)||0;
   const proxyItems=currentType==='proxy'
@@ -1315,6 +1377,8 @@ function saveExpense() {
     name,amount:amt,category:currentCat,
     payer:currentPayer,date,expType:currentType,
     status:currentStatus,
+    origCurrency:currentCurrency,
+    origAmount:rawInput,
     note:document.getElementById('expenseNote').value.trim(),
     splits:{wei:wp,fat:fp},
     proxyItems
@@ -1333,6 +1397,115 @@ function deleteExpense() {
 }
 
 // ── Data ──────────────────────────────────────────────
+// ── 刷卡建議 ──
+const CARD_ADVICE = [
+  {
+    scene: '超商購物',
+    icon: '🏪',
+    note: '7-11、全家、LAWSON 結帳',
+    advice: [
+      { card: '全支付（PayPay）', detail: '有 PayPay 標誌即可掃碼，筆筆 3.5% 回饋＋免 1.5% 手續費，搭配國泰世華帳戶每週加碼最高 5%，超商小額多刷最划算', color: '#4ecb8d', badge: '最推薦' },
+      { card: '台新 Richart 卡', detail: '切換「Pay著刷」用台新Pay+ 掃碼，享 3.8% 回饋＋免 1.5% 手續費', color: '#e05555', badge: '' },
+      { card: '國泰 CUBE 卡', detail: '切換「趣旅行」直接感應，3% 回饋無上限', color: '#4a6fd4', badge: '' },
+    ]
+  },
+  {
+    scene: '動漫周邊',
+    icon: '🎌',
+    note: 'JUMP Shop、橡子共和國、Animate、動漫快閃店',
+    advice: [
+      { card: '台新 Richart 卡', detail: '切換「玩旅刷」日本實體消費 3.3% 無上限，大額購物最安心，Visa 接受度廣', color: '#e05555', badge: '最推薦' },
+      { card: '全支付（PayPay）', detail: '若店家有 PayPay 標誌可用，3.5% 回饋，但部分動漫專賣店未必支援', color: '#4ecb8d', badge: '' },
+      { card: '國泰 CUBE 卡', detail: '切換「趣旅行」享 3% 回饋無上限', color: '#4a6fd4', badge: '' },
+    ]
+  },
+  {
+    scene: '電器耳機鞋子',
+    icon: '🎧',
+    note: 'Bic Camera、EDION、藥妝店、鞋店',
+    advice: [
+      { card: '台新 Richart 卡（Visa）', detail: 'BicCamera 刷台新 Visa 滿 5,264 日圓享 5% 折扣；松本清最高 17% 優惠（含免稅），切換「玩旅刷」再疊 3.3% 回饋', color: '#e05555', badge: '最推薦' },
+      { card: '街口支付（PayPay）', detail: '街口支付透過 PayPay 機制在日本使用，唐吉訶德有街口獨家支援，大型藥妝電器也可用', color: '#f0b429', badge: '' },
+      { card: '國泰 CUBE 卡', detail: '切換「趣旅行」3% 回饋，LikeJapan APP 優惠券可疊加', color: '#4a6fd4', badge: '' },
+    ]
+  },
+  {
+    scene: '鐵路車票',
+    icon: '🚃',
+    note: '橫濱→東京等 JR/新幹線/私鐵',
+    advice: [
+      { card: '國泰 CUBE 卡', detail: '在 CUBE App 領券後，Suica 加值享 Apple Pay 5% 回饋（需領券），一般電車刷卡 3% 無上限', color: '#4a6fd4', badge: '最推薦' },
+      { card: '台新 Richart 卡', detail: '切換「玩旅刷」日本實體消費 3.3% 回饋，購票機台感應', color: '#e05555', badge: '' },
+      { card: '現金 / Suica', detail: '小額交通最方便，用 Suica IC 卡事先加值（iPhone 可加入 Apple Wallet）', color: '#8890b8', badge: '便利' },
+    ]
+  },
+  {
+    scene: '現場門票',
+    icon: '🎡',
+    note: '水族館、八景島、澀谷SKY、晴空塔、陽光水族館',
+    advice: [
+      { card: '台新 Richart 卡', detail: '切換「玩旅刷」3.3% 回饋，大額門票更划算，Visa 接受度最高', color: '#e05555', badge: '最推薦' },
+      { card: '國泰 CUBE 卡', detail: '切換「趣旅行」3% 回饋，Klook 預購可疊加（CUBE App 需領券）', color: '#4a6fd4', badge: '' },
+      { card: '全支付（PayPay）', detail: '部分景點售票機支援 PayPay，可嘗試，但建議備用信用卡', color: '#4ecb8d', badge: '' },
+    ]
+  },
+  {
+    scene: '餐廳消費',
+    icon: '🍜',
+    note: '拉麵、居酒屋、壽喜燒、文字燒等',
+    advice: [
+      { card: '台新 Richart 卡', detail: '切換「玩旅刷」3.3% 回饋，絕大多數餐廳接受 Visa/Mastercard', color: '#e05555', badge: '最推薦' },
+      { card: '全支付 / 街口（PayPay）', detail: '越來越多日本餐廳支援 PayPay，中小型餐廳、居酒屋常見，可直接掃碼', color: '#4ecb8d', badge: '' },
+      { card: '統一獅兆豐 JCB', detail: 'JCB 在日本接受度高，部分傳統餐廳只接受 JCB/現金', color: '#8890b8', badge: '' },
+    ]
+  },
+];
+
+const CARD_TIPS = [
+  { icon: '💡', text: '全支付、街口在日本可透過 PayPay 機制使用，看到紅白色 PayPay 標誌即可掃碼付款' },
+  { icon: '💡', text: '全支付搭配國泰世華帳戶每週加碼，超商小額消費最划算（回饋額度有上限）' },
+  { icon: '⚠️', text: 'CUBE 卡每天只能切換一次方案，出發前在 App 切換好「趣旅行」' },
+  { icon: '⚠️', text: 'Richart 卡每天也只能切換一次，日本消費前切換至「玩旅刷」' },
+  { icon: '💡', text: 'BicCamera、松本清、唐吉訶德結帳前先出示 LikeJapan 優惠券疊加折扣' },
+  { icon: '💡', text: '台新 Richart 卡免 1.5% 國外交易手續費，大額消費比全支付更划算' },
+  { icon: '💡', text: '全支付在日本扣台幣（非日幣），匯率每天早上 10:30 公告於 App' },
+];
+
+function renderCardAdvice() {
+  const el = document.getElementById('cardAdviceContent'); if (!el) return;
+  el.innerHTML = `
+    <div style="background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:8px">💳 你的卡片</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--text2)">
+        <div>🔵 <b style="color:var(--text)">國泰 CUBE 卡</b>（Mastercard）— 日本切換「趣旅行」3% 無上限</div>
+        <div>🔴 <b style="color:var(--text)">台新 Richart 卡</b>（Mastercard）— 日本切換「玩旅刷」3.3% 無上限＋免手續費</div>
+        <div>🟢 <b style="color:var(--text)">統一獅兆豐聯名卡</b>（JCB）— 日本 JCB 特有優惠，傳統店接受度高</div>
+      </div>
+    </div>
+    ${CARD_ADVICE.map(s => `
+      <div style="background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-size:20px">${s.icon}</span>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text)">${escH(s.scene)}</div>
+            <div style="font-size:11px;color:var(--text3)">${escH(s.note)}</div>
+          </div>
+        </div>
+        ${s.advice.map((a,i) => `
+          <div style="padding:8px 10px;background:${i===0?'rgba(108,143,240,0.08)':'var(--surface2)'};border-radius:var(--radius-sm);margin-bottom:6px;${i===0?'border-left:2px solid '+a.color:''}">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+              <span style="font-size:13px;font-weight:600;color:${a.color}">${escH(a.card)}</span>
+              ${a.badge?`<span style="font-size:9px;background:${a.color}22;color:${a.color};border-radius:3px;padding:1px 6px;font-weight:600">${a.badge}</span>`:''}
+            </div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.5">${escH(a.detail)}</div>
+          </div>`).join('')}
+      </div>`).join('')}
+    <div style="background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:12px 14px">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">注意事項</div>
+      ${CARD_TIPS.map(t => `<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:4px">${t.icon} ${escH(t.text)}</div>`).join('')}
+    </div>`;
+}
+
 function exportData() {
   const data=JSON.stringify({expenses,budgets,rate},null,2);
   navigator.clipboard.writeText(data).then(()=>alert('已複製到剪貼板！')).catch(()=>alert(data));
