@@ -243,6 +243,19 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 
   <!-- 設定 -->
   <div id="tab-settings" style="display:none">
+    <div class="section-label">每日預算</div>
+    <div class="settings-card">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">設定每人每日預設額度，可在「預算」tab 單獨調整每天</div>
+      <div class="settings-row">
+        <span class="settings-label">🔵 威 / 日 ¥</span>
+        <input class="settings-input" id="settingsBudgetWei" type="number" inputmode="numeric" placeholder="例：10000">
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">🩷 肥肥 / 日 ¥</span>
+        <input class="settings-input" id="settingsBudgetFat" type="number" inputmode="numeric" placeholder="例：10000">
+      </div>
+      <button class="settings-btn" style="width:100%;margin-top:6px" onclick="saveSettingsBudget()">儲存每日預算</button>
+    </div>
     <div class="section-label">🎌 動漫週邊預算</div>
     <div class="settings-card">
       <div style="font-size:12px;color:var(--text2);margin-bottom:10px">整趟旅行的動漫週邊總額度（個人各自計算）</div>
@@ -466,7 +479,7 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 </div>
 
 <script>
-const APP_VERSION = '1.3.7';
+const APP_VERSION = '1.3.9';
 const FOOD_CATS = ['餐飲','零食'];
 const ANIME_CATS = ['動漫週邊'];
 const TRIP_DAYS = ['2025-05-13','2025-05-14','2025-05-15','2025-05-16','2025-05-17','2025-05-18','2025-05-19'];
@@ -647,6 +660,12 @@ function fmtDual(n) {
 function switchTab(tab, el) {
   TABS.forEach(t => document.getElementById('tab-'+t).style.display = t===tab?'block':'none');
   document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('active', TABS[i]===tab));
+  if (tab==='settings') {
+    const wEl = document.getElementById('settingsBudgetWei');
+    const fEl = document.getElementById('settingsBudgetFat');
+    if (wEl && budgets.defaultWei) wEl.value = budgets.defaultWei;
+    if (fEl && budgets.defaultFat) fEl.value = budgets.defaultFat;
+  }
   render();
 }
 
@@ -699,7 +718,13 @@ function renderSummary() {
     <div class="cat-row">
       <div class="cat-icon" style="background:${CAT_COLORS[cat]||'#555'}22">${CATS[cat]||'📌'}</div>
       <div style="flex:1">
-        <div style="display:flex;justify-content:space-between"><span class="cat-name">${cat}</span><span class="cat-amt">${fmtJpy(amt)}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span class="cat-name">${cat}</span>
+          <span style="text-align:right">
+            <span class="cat-amt">${fmtJpy(amt)}</span>
+            ${fmtTwd(amt)?`<span style="font-size:11px;color:var(--text3);display:block">${fmtTwd(amt)}</span>`:''}
+          </span>
+        </div>
         <div class="cat-bar-wrap"><div class="cat-bar" style="width:${amt/max*100}%;background:${CAT_COLORS[cat]||'var(--accent)'}"></div></div>
       </div>
     </div>`).join('') : '<div class="empty">尚無支出紀錄</div>';
@@ -717,8 +742,8 @@ function renderSummary() {
         <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
           <span style="color:var(--wei)">🔵 威</span>
           <span style="color:${weiAnime>animeBudget.wei?'var(--red)':'var(--text2)'}">
-            ${fmtJpy(weiAnime)} / ${fmtJpy(animeBudget.wei)} 
-            ${weiAnime>animeBudget.wei?`<span style="color:var(--red)">超支！</span>`:`剩 ${fmtJpy(animeBudget.wei-weiAnime)}`}
+            ${fmtJpy(weiAnime)}(${fmtTwd(weiAnime)}) / ${fmtJpy(animeBudget.wei)}(${fmtTwd(animeBudget.wei)})
+            ${weiAnime>animeBudget.wei?`<span style="color:var(--red)"> 超支！</span>`:`　剩 ${fmtJpy(animeBudget.wei-weiAnime)}(${fmtTwd(animeBudget.wei-weiAnime)})`}
           </span>
         </div>
         <div class="progress-bar"><div class="progress-fill ${weiAnime>animeBudget.wei?'over':weiPct>80?'warn':''}" style="width:${weiPct}%;background:#e060c0"></div></div>
@@ -727,8 +752,8 @@ function renderSummary() {
         <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
           <span style="color:var(--fat)">🩷 肥肥豬豬</span>
           <span style="color:${fatAnime>animeBudget.fat?'var(--red)':'var(--text2)'}">
-            ${fmtJpy(fatAnime)} / ${fmtJpy(animeBudget.fat)}
-            ${fatAnime>animeBudget.fat?`<span style="color:var(--red)">超支！</span>`:`剩 ${fmtJpy(animeBudget.fat-fatAnime)}`}
+            ${fmtJpy(fatAnime)}(${fmtTwd(fatAnime)}) / ${fmtJpy(animeBudget.fat)}(${fmtTwd(animeBudget.fat)})
+            ${fatAnime>animeBudget.fat?`<span style="color:var(--red)"> 超支！</span>`:`　剩 ${fmtJpy(animeBudget.fat-fatAnime)}(${fmtTwd(animeBudget.fat-fatAnime)})`}
           </span>
         </div>
         <div class="progress-bar"><div class="progress-fill ${fatAnime>animeBudget.fat?'over':fatPct>80?'warn':''}" style="width:${fatPct}%;background:var(--fat)"></div></div>
@@ -899,6 +924,17 @@ function renderList() {
       </div>`;
     }).join('');
   }).join('');
+}
+
+function saveSettingsBudget() {
+  const wei = parseInt(document.getElementById('settingsBudgetWei').value)||0;
+  const fat = parseInt(document.getElementById('settingsBudgetFat').value)||0;
+  if (!wei && !fat) { alert('請至少輸入一人的預算'); return; }
+  budgets.defaultWei = wei || budgets.defaultWei;
+  budgets.defaultFat = fat || budgets.defaultFat;
+  localStorage.setItem('budgets', JSON.stringify(budgets));
+  render();
+  alert(`已儲存！威 ¥${budgets.defaultWei.toLocaleString()} / 肥肥豬豬 ¥${budgets.defaultFat.toLocaleString()}`);
 }
 
 function saveAnimeBudget() {
@@ -1134,15 +1170,21 @@ function renderSettle() {
       <span class="settle-person" style="color:var(--fat)">肥肥豬豬</span>
       <i class="ti ti-arrow-right" style="color:var(--text3)"></i>
       <span class="settle-person" style="color:var(--wei)">威</span>
-      <span class="settle-amt">${fmtJpy(amt)}</span></div>
-      <div class="settle-label">肥肥豬豬需還給威 ${fmtTwd(amt)}</div></div>`;
+      <div style="margin-left:auto;text-align:right">
+        <div class="settle-amt">${fmtJpy(amt)}</div>
+        <div style="font-size:12px;color:var(--text2)">${fmtTwd(amt)}</div>
+      </div></div>
+      <div class="settle-label">肥肥豬豬需還給威</div></div>`;
   } else {
     html += `<div class="settle-card"><div class="settle-arrow">
       <span class="settle-person" style="color:var(--wei)">威</span>
       <i class="ti ti-arrow-right" style="color:var(--text3)"></i>
       <span class="settle-person" style="color:var(--fat)">肥肥豬豬</span>
-      <span class="settle-amt">${fmtJpy(amt)}</span></div>
-      <div class="settle-label">威需還給肥肥豬豬 ${fmtTwd(amt)}</div></div>`;
+      <div style="margin-left:auto;text-align:right">
+        <div class="settle-amt">${fmtJpy(amt)}</div>
+        <div style="font-size:12px;color:var(--text2)">${fmtTwd(amt)}</div>
+      </div></div>
+      <div class="settle-label">威需還給肥肥豬豬</div></div>`;
   }
   el.innerHTML = html;
 }
